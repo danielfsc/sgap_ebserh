@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "888498570415",
+    "project_id": "sgap-ebserh",
+    "storage_bucket": "sgap-ebserh.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888498570415:android:647396f064e6bd2d28c05a",
+        "android_client_info": {
+          "package_name": "com.danielgirardi.sgap_ebserh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "888498570415-cqap5jhpmnpqjgfj9fj8uun622rm71ok.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.danielgirardi.sgap_ebserh",
+            "certificate_hash": "044272c7930b02bfc7d64717502f1e0ced2ee416"
+          }
+        },
+        {
+          "client_id": "888498570415-dfijhasp4k1m0ilt8p7r4ocr3j6lnsg9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClhk3oHeUT8pr5LYMs0TYnnpX1iXNm7uI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "888498570415-dfijhasp4k1m0ilt8p7r4ocr3j6lnsg9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.sgap_ebserh">
+    package="com.danielgirardi.sgap_ebserh">
    <application
         android:label="sgap_ebserh"
         android:name="${applicationName}"

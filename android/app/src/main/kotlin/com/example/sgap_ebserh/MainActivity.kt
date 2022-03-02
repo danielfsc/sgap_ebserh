@@ -1,4 +1,4 @@
-package com.example.sgap_ebserh
+package com.danielgirardi.sgap_ebserh
 
 import io.flutter.embedding.android.FlutterActivity
 
