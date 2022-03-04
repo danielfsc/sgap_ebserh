@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sgap_ebserh/shared/models/option_menu.dart';
 
 List<OptionMenu> userMenu = [
-  OptionMenu(Icons.data_saver_on, 'Novo procedimento', '/newprocedure', true,
+  OptionMenu(Icons.data_saver_on, 'Novo procedimento', '/procedures/new', true,
       Colors.blueAccent),
   OptionMenu(
       Icons.receipt_long, 'Procedimentos', '/procedures', true, Colors.red),
@@ -23,7 +23,8 @@ List<OptionMenu> adminMenu = [
 ];
 
 List<OptionMenu> getMenu(String role) {
-  List<OptionMenu> out = role == "student" ? userMenu : preceptorMenu;
-  out += role == "admin" ? adminMenu : [];
+  List<OptionMenu> out = userMenu;
+  out += role == "preceptor" ? preceptorMenu : [];
+  out += role == "admin" ? [...preceptorMenu, ...adminMenu] : [];
   return out;
 }

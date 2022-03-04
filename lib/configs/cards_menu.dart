@@ -9,3 +9,15 @@ var userCardMenu = [
   IconMenu('Arquivar', Icons.archive, isPublic: false),
   // IconMenu('Deletar', Icons.delete, isPublic: false),
 ];
+
+List<IconMenu> procedureCardMenu = [
+  // IconMenu('Visualizar', Icons.visibility),
+  IconMenu(
+    'Editar',
+    Icons.edit,
+  ),
+  IconMenu(
+    'Deletar',
+    Icons.delete,
+  ),
+];

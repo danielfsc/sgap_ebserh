@@ -27,11 +27,11 @@ class _SystemBodyState extends State<SystemBody> {
         child: Column(
       children: [
         _systemSelectionWidget(),
-        _buildSelectedSystem(context),
         Padding(
           padding: const EdgeInsets.all(18.0),
           child: _addButton(context),
         ),
+        _buildSelectedSystem(context),
       ],
     ));
   }

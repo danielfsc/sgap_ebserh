@@ -42,7 +42,11 @@ dependencies:
   #Local storage
   shared_preferences: ^2.0.8
 
-  # flutter_datetime_picker: ^1.5.1
+  multi_select_flutter: ^4.0.0
+
+  
+
+  
 
   prompt_dialog: ^1.0.6
   permission_handler: any

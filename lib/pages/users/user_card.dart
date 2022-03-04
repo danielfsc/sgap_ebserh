@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sgap_ebserh/configs/user_card_menu.dart';
+import 'package:sgap_ebserh/configs/cards_menu.dart';
 import 'package:sgap_ebserh/shared/models/show_user_model.dart';
 import 'package:sgap_ebserh/shared/widgets/snack_message.dart';
 import 'package:vrouter/vrouter.dart';
@@ -117,29 +117,29 @@ class _UserCardState extends State<UserCard> {
     }
   }
 
-  Future<void> _deleteUser(BuildContext context, String email) async {
-    if (await showAlert(context,
-        title: 'DELETAR USUÁRIO',
-        message:
-            "ATENÇÃO: Você vai deletar este USUÁRIO e TODOS os registros relativo a esse usuário.\nVOCÊ TEM ABSOLUTA CERTEZA?",
-        cancelTitle: 'CANCELAR',
-        confirmTitle: 'deletar')) {
-      try {
-        FirebaseFirestore.instance.collection('users/').doc(email).delete();
-        snackMessage(
-          context,
-          message: 'Usuário $email deletado com sucesso.',
-          color: Colors.orange,
-        );
-      } on FirebaseException catch (e) {
-        snackMessage(
-          context,
-          message: 'Ops, não consegui deletar: ${e.code}',
-          color: Colors.red,
-        );
-      }
-    }
-  }
+  // Future<void> _deleteUser(BuildContext context, String email) async {
+  //   if (await showAlert(context,
+  //       title: 'DELETAR USUÁRIO',
+  //       message:
+  //           "ATENÇÃO: Você vai deletar este USUÁRIO e TODOS os registros relativo a esse usuário.\nVOCÊ TEM ABSOLUTA CERTEZA?",
+  //       cancelTitle: 'CANCELAR',
+  //       confirmTitle: 'deletar')) {
+  //     try {
+  //       FirebaseFirestore.instance.collection('users/').doc(email).delete();
+  //       snackMessage(
+  //         context,
+  //         message: 'Usuário $email deletado com sucesso.',
+  //         color: Colors.orange,
+  //       );
+  //     } on FirebaseException catch (e) {
+  //       snackMessage(
+  //         context,
+  //         message: 'Ops, não consegui deletar: ${e.code}',
+  //         color: Colors.red,
+  //       );
+  //     }
+  //   }
+  // }
 
   Widget _userInfo(ShowUserModel user) {
     return Column(

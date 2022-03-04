@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sgap_ebserh/controllers/authentication.dart';
+import 'package:sgap_ebserh/pages/procedures/edit/edit_procedures.dart';
+import 'package:sgap_ebserh/pages/procedures/procedures_page.dart';
 import 'package:vrouter/vrouter.dart';
 
 import '../pages/home/home_page.dart';
@@ -22,6 +24,22 @@ List<VRouteElement> vRoutes = [
     stackedRoutes: [
       VWidget(path: '/home', widget: const HomePage()),
       VWidget(path: '/system', widget: const SystemPage()),
+      VWidget(
+        path: '/procedures',
+        widget: const ProcedurePage(),
+        stackedRoutes: [
+          VWidget(path: 'new', widget: const EditProcedurePage()),
+          VWidget(path: 'edit/:document', widget: const EditProcedurePage()),
+          VWidget(path: 'edit/:document/', widget: const EditProcedurePage()),
+        ],
+      ),
+      VWidget(
+        path: '/procedures/:user',
+        widget: const ProcedurePage(),
+        stackedRoutes: [
+          VWidget(path: 'edit/:document', widget: const EditProcedurePage()),
+        ],
+      ),
       VWidget(
         path: '/users',
         widget: const UsersPage(),

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sgap_ebserh/configs/dates.dart';
+import 'package:sgap_ebserh/configs/decorations/input_decoration.dart';
 import 'package:sgap_ebserh/controllers/authentication.dart';
 import 'package:sgap_ebserh/shared/widgets/date_form_field.dart';
 import 'package:sgap_ebserh/shared/widgets/snack_message.dart';
@@ -46,12 +48,12 @@ class _EditUserState extends State<EditUser> {
         child: Column(
           children: [
             TextFormField(
-              decoration: _decoration('Nome Completo'),
+              decoration: inputDecoration('Nome Completo'),
               controller: _controller[0],
             ),
             const SizedBox(height: 20),
             TextFormField(
-              decoration: _decoration('E-mail'),
+              decoration: inputDecoration('E-mail'),
               controller: _controller[1],
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -66,12 +68,12 @@ class _EditUserState extends State<EditUser> {
             ),
             const SizedBox(height: 20),
             TextFormField(
-              decoration: _decoration('CRM'),
+              decoration: inputDecoration('CRM'),
               controller: _controller[2],
             ),
             const SizedBox(height: 20),
             TextFormField(
-              decoration: _decoration('E-mail do preceptor'),
+              decoration: inputDecoration('E-mail do preceptor'),
               controller: _controller[3],
             ),
             const SizedBox(height: 20),
@@ -103,7 +105,7 @@ class _EditUserState extends State<EditUser> {
         role = user.data()['role'];
         pickedDate =
             DateTime.parse(user.data()['admission'].toDate().toString());
-        _controller[4].text = DateFormat("dd MMM yyyy").format(pickedDate!);
+        _controller[4].text = DateFormat(dayFormat).format(pickedDate!);
       });
     }
     // return const AsyncSnapshot.withData(ConnectionState.done, null);
@@ -172,8 +174,8 @@ class _EditUserState extends State<EditUser> {
 
         return null;
       },
-      format: DateFormat("dd MMM yyyy"),
-      decoration: _decoration('Admissão'),
+      format: DateFormat(dayFormat),
+      decoration: inputDecoration('Admissão'),
       controller: _controller[4],
       onShowPicker: (context, currentValue) async {
         final date = await showDatePicker(
@@ -215,15 +217,6 @@ class _EditUserState extends State<EditUser> {
           child: Text('${role['text']}'),
         );
       }).toList(),
-    );
-  }
-
-  InputDecoration _decoration(String label) {
-    return InputDecoration(
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      labelText: label,
     );
   }
 }
