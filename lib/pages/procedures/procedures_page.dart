@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sgap_ebserh/configs/cards_menu.dart';
 import 'package:sgap_ebserh/configs/collections.dart';
 import 'package:sgap_ebserh/configs/dates.dart';
+import 'package:sgap_ebserh/configs/widths.dart';
 import 'package:sgap_ebserh/controllers/app_controller.dart';
 import 'package:sgap_ebserh/shared/pages/page_mask.dart';
 import 'package:sgap_ebserh/shared/widgets/empty_loading.dart';
@@ -28,32 +29,57 @@ class _ProcedurePageState extends State<ProcedurePage> {
         AppController.instance.user!.email;
     return PageMask(
       title: 'Procedimentos',
-      body: StreamBuilder(
-          stream: proceduresCollection(userId!).orderBy('date').snapshots(),
-          builder: (context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
-              return loading();
-            } else if (snapshot.data.docs.length == 0) {
-              return const Text('Nenhum procedimento cadastrado');
-            }
-            return listProcedures(context, snapshot);
-          }),
+      body: Center(
+        child: Column(
+          children: [
+            const SizedBox(height: 30),
+            StreamBuilder(
+                stream:
+                    proceduresCollection(userId!).orderBy('date').snapshots(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData) {
+                    return loading();
+                  } else if (snapshot.data.docs.length == 0) {
+                    return const Text('Nenhum procedimento cadastrado');
+                  }
+                  return listProcedures(context, snapshot);
+                }),
+            const SizedBox(height: 30),
+            ElevatedButton(
+                onPressed: () => context.vRouter.to('new'),
+                child: const Text('Novo Procedimento')),
+          ],
+        ),
+      ),
     );
   }
 
   Widget listProcedures(BuildContext context, AsyncSnapshot snapshot) {
-    return ListView.builder(
-      itemCount: snapshot.data.docs.length,
-      itemBuilder: (BuildContext context, index) {
-        dynamic procedure = snapshot.data.docs[index];
-        return Card(
-          child: ListTile(
-            title: Text(dayAndHourFromTimestamp(procedure['date'])),
-            subtitle: Text('${procedure['duration']} min'),
-            trailing: _procedureActions(context, procedure),
-          ),
-        );
-      },
+    return Wrap(
+      spacing: 20,
+      children: snapshot.data.docs
+          .map<Widget>((doc) => procedureCard(context, doc))
+          .toList(),
+    );
+    // return ListView.builder(
+    //   itemCount: snapshot.data.docs.length,
+    //   itemBuilder: (BuildContext context, index) {
+    //     dynamic procedure = snapshot.data.docs[index];
+    //     return procedureCard(context, procedure);
+    //   },
+    // );
+  }
+
+  Widget procedureCard(context, procedure) {
+    return SizedBox(
+      width: defaultCardWidth(context),
+      child: Card(
+        child: ListTile(
+          title: Text(dayAndHourFromTimestamp(procedure['date'])),
+          subtitle: Text('${procedure['duration']} min'),
+          trailing: _procedureActions(context, procedure),
+        ),
+      ),
     );
   }
 

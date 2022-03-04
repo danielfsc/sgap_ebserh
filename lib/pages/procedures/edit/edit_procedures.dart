@@ -75,9 +75,9 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
             child: SingleChildScrollView(
               child: Center(
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.95 > 400
+                  width: MediaQuery.of(context).size.width * 0.9 > 400
                       ? 400
-                      : MediaQuery.of(context).size.width * 0.95,
+                      : MediaQuery.of(context).size.width * 0.9,
                   child: _selections(context),
                 ),
               ),
@@ -181,12 +181,13 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
         selectedValues[doc.id] = [];
       }
     }
-    _controller[0].text = oldProcedure['duration'];
-    procedureDate = DateTime.parse(oldProcedure['date'].toDate().toString());
-    _controller[1].text = DateFormat(dayAndHourFormat).format(procedureDate!);
-
-    for (String selection in selectedValues.keys) {
-      selectedValues[selection] = oldProcedure[selection] ?? [];
+    if (procedureId != null) {
+      _controller[0].text = oldProcedure['duration'] ?? '';
+      procedureDate = DateTime.parse(oldProcedure['date'].toDate().toString());
+      _controller[1].text = DateFormat(dayAndHourFormat).format(procedureDate!);
+      for (String selection in selectedValues.keys) {
+        selectedValues[selection] = oldProcedure[selection] ?? [];
+      }
     }
   }
 
