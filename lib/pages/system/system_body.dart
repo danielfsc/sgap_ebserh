@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sgap_ebserh/shared/models/system_option.dart';
 import 'package:sgap_ebserh/shared/widgets/empty_loading.dart';
+import 'package:vrouter/vrouter.dart';
 
 import '../../shared/widgets/show_alert.dart';
 
@@ -26,6 +27,14 @@ class _SystemBodyState extends State<SystemBody> {
     return Center(
         child: Column(
       children: [
+        const SizedBox(height: 30),
+        TextButton(
+          onPressed: () {
+            context.vRouter.to('editcategories');
+          },
+          child: const Text('Modificar os campos'),
+        ),
+        const SizedBox(height: 30),
         _systemSelectionWidget(),
         Padding(
           padding: const EdgeInsets.all(18.0),
@@ -201,7 +210,7 @@ class _SystemBodyState extends State<SystemBody> {
 
   Widget _systemSelectionWidget() {
     return StreamBuilder(
-      stream: systemCollection.snapshots(),
+      stream: systemCollection.orderBy('index').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (!snapshot.hasData) {
           return loading();
@@ -230,7 +239,7 @@ class _SystemBodyState extends State<SystemBody> {
       items: [
             const DropdownMenuItem<String?>(
               value: null,
-              child: Text("Escolha o item"),
+              child: Text("Escolha o campo"),
             )
           ] +
           data.map<DropdownMenuItem<String?>>((value) {
@@ -246,7 +255,7 @@ class _SystemBodyState extends State<SystemBody> {
   }
 
   Future<QuerySnapshot> requestAllSystemDocs() async {
-    return await systemCollection.get();
+    return await systemCollection.orderBy('index').get();
   }
 
   dropMenuItem(value) {

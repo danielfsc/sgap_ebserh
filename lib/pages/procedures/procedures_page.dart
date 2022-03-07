@@ -178,7 +178,7 @@ class _ProcedurePageState extends State<ProcedurePage> {
                   child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: FutureBuilder(
-                  future: systemCollection.get(),
+                  future: systemCollection.orderBy('index').get(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Text('Erro ao iniciar o Firebase');
@@ -213,8 +213,8 @@ class _ProcedurePageState extends State<ProcedurePage> {
 
   String getFieldText(field, procedure) {
     String parameter = field.id;
-    List<dynamic> parameterOptions = field.data()['data'];
-    List<dynamic> rawValues = procedure.data()[parameter];
+    List<dynamic> parameterOptions = field.data()['data'] ?? [];
+    List<dynamic> rawValues = procedure.data()[parameter] ?? [];
     String out = '';
     for (String rv in rawValues) {
       dynamic gp = parameterOptions
@@ -282,7 +282,6 @@ class _ProcedurePageState extends State<ProcedurePage> {
 
           case 'Deletar':
             _deleteProcedure(context, procedure.id);
-            print('Deletar');
             break;
         }
       },

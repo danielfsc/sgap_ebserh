@@ -11,9 +11,9 @@ List<OptionMenu> userMenu = [
 
 List<OptionMenu> preceptorMenu = [
   OptionMenu(
-      Icons.school, 'Meus Estudantes', '/students', true, Colors.blueAccent),
+      Icons.school, 'Meus Estudantes', '/students', false, Colors.blueAccent),
   OptionMenu(
-      Icons.manage_search, 'Relatórios', '/reports', true, Colors.orange),
+      Icons.manage_search, 'Relatórios', '/reports', false, Colors.orange),
 ];
 
 List<OptionMenu> adminMenu = [

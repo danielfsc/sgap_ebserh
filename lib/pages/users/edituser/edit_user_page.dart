@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sgap_ebserh/configs/dates.dart';
 import 'package:sgap_ebserh/configs/decorations/input_decoration.dart';
+import 'package:sgap_ebserh/configs/widths.dart';
+import 'package:sgap_ebserh/controllers/app_controller.dart';
 import 'package:sgap_ebserh/controllers/authentication.dart';
 import 'package:sgap_ebserh/shared/widgets/date_form_field.dart';
 import 'package:sgap_ebserh/shared/widgets/snack_message.dart';
@@ -36,7 +38,12 @@ class _EditUserState extends State<EditUser> {
       appBar: AppBar(
         title: const Text('Adicionar Usuário'),
       ),
-      body: _fullForm(context),
+      body: Center(
+        child: SizedBox(
+          width: defaultCardWidth(context),
+          child: _fullForm(context),
+        ),
+      ),
     );
   }
 
@@ -106,6 +113,11 @@ class _EditUserState extends State<EditUser> {
         pickedDate =
             DateTime.parse(user.data()['admission'].toDate().toString());
         _controller[4].text = DateFormat(dayFormat).format(pickedDate!);
+      });
+    }
+    if (email == null) {
+      setState(() {
+        _controller[3].text = AppController.instance.email;
       });
     }
     // return const AsyncSnapshot.withData(ConnectionState.done, null);

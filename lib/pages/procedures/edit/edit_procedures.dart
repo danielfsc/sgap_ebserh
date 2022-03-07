@@ -47,7 +47,6 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
 
   @override
   void initState() {
-    // future = systemCollection.get();
     super.initState();
   }
 
@@ -160,6 +159,7 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
   Future<AsyncSnapshot<dynamic>> getDocuments(BuildContext context) async {
     try {
       await systemCollection
+          .orderBy('index')
           .get()
           .then((value) => systemDocuments = value.docs);
       if (procedureId != null) {

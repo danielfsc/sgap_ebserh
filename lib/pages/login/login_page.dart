@@ -26,8 +26,8 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     _auth = Authentication.initializeFirebase(context: context);
     super.initState();
-    _email.text = "d.girardi@ufsc.br";
-    _password.text = "123456";
+    // _email.text = "d.girardi@ufsc.br";
+    // _password.text = "123456";
   }
 
   @override
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const Text(
-                    'Sistema de Registro de Atividades Práticas',
+                    'Sistema de Gerenciamento de Atividades Práticas',
                     style: TextStyle(
                       color: Color(0xff1b51a2),
                       fontSize: 20,

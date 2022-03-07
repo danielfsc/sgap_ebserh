@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sgap_ebserh/controllers/app_controller.dart';
 import 'package:sgap_ebserh/controllers/authentication.dart';
 import 'package:sgap_ebserh/pages/procedures/edit/edit_procedures.dart';
 import 'package:sgap_ebserh/pages/procedures/procedures_page.dart';
+import 'package:sgap_ebserh/pages/system/edit/edit_categories_page.dart';
 import 'package:vrouter/vrouter.dart';
 
 import '../pages/home/home_page.dart';
@@ -20,10 +22,10 @@ List<VRouteElement> vRoutes = [
     ],
   ),
   VGuard(
-    beforeEnter: (vRedirector) async => isLoggedIn(vRedirector),
+    beforeEnter: (vRedirector) async =>
+        isLoggedIn(vRedirector, ['student', 'preceptor', 'admin']),
     stackedRoutes: [
       VWidget(path: '/home', widget: const HomePage()),
-      VWidget(path: '/system', widget: const SystemPage()),
       VWidget(
         path: '/procedures',
         widget: const ProcedurePage(),
@@ -40,6 +42,12 @@ List<VRouteElement> vRoutes = [
           VWidget(path: 'edit/:document', widget: const EditProcedurePage()),
         ],
       ),
+    ],
+  ),
+  VGuard(
+    beforeEnter: (vRedirector) async =>
+        isLoggedIn(vRedirector, ['preceptor', 'admin']),
+    stackedRoutes: [
       VWidget(
         path: '/users',
         widget: const UsersPage(),
@@ -50,13 +58,25 @@ List<VRouteElement> vRoutes = [
       ),
     ],
   ),
+  VGuard(
+    beforeEnter: (vRedirector) async => isLoggedIn(vRedirector, ['admin']),
+    stackedRoutes: [
+      VWidget(path: '/system', widget: const SystemPage(), stackedRoutes: [
+        VWidget(path: 'editcategories', widget: const EditCategoriesPage())
+      ]),
+    ],
+  ),
 ];
 
-Future<void> isLoggedIn(VRedirector redirector) async {
+Future<void> isLoggedIn(
+    VRedirector redirector, List<String> allowedRoles) async {
   if (await Authentication.isLoggedIn()) {
     return;
   }
-  redirector.to('/');
+  if (allowedRoles.contains(AppController.instance.profile!.role)) {
+    redirector.to('/');
+  }
+  return;
 }
 
 var routes = <String, WidgetBuilder>{
