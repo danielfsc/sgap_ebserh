@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import 'package:vrouter/vrouter.dart';
+
 import 'package:sgap_ebserh/configs/cards_menu.dart';
 import 'package:sgap_ebserh/configs/collections.dart';
 import 'package:sgap_ebserh/configs/dates.dart';
@@ -9,7 +13,10 @@ import 'package:sgap_ebserh/shared/pages/page_mask.dart';
 import 'package:sgap_ebserh/shared/widgets/empty_loading.dart';
 import 'package:sgap_ebserh/shared/widgets/show_alert.dart';
 import 'package:sgap_ebserh/shared/widgets/snack_message.dart';
-import 'package:vrouter/vrouter.dart';
+
+import '../../configs/decorations/input_decoration.dart';
+import '../../shared/widgets/date_form_field.dart';
+import '../../shared/widgets/super_tooltip.dart';
 
 class ProcedurePage extends StatefulWidget {
   const ProcedurePage({Key? key}) : super(key: key);
@@ -21,7 +28,8 @@ class ProcedurePage extends StatefulWidget {
 class _ProcedurePageState extends State<ProcedurePage> {
   String? userId;
 
-  int? expandedValue;
+  DateTime? startDate;
+  DateTime? endDate;
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +41,16 @@ class _ProcedurePageState extends State<ProcedurePage> {
         child: Column(
           children: [
             const SizedBox(height: 30),
+            _dateInterval(context),
+            const SizedBox(height: 30),
             StreamBuilder(
-                stream:
-                    proceduresCollection(userId!).orderBy('date').snapshots(),
+                stream: proceduresCollection(userId!)
+                    .orderBy('date')
+                    .where('date',
+                        isLessThanOrEqualTo: endDate ?? DateTime(maxYear))
+                    .where('date',
+                        isGreaterThanOrEqualTo: startDate ?? DateTime(minYear))
+                    .snapshots(),
                 builder: (context, AsyncSnapshot snapshot) {
                   if (!snapshot.hasData) {
                     return loading();
@@ -54,6 +69,78 @@ class _ProcedurePageState extends State<ProcedurePage> {
     );
   }
 
+  Widget _dateInterval(context) {
+    return Wrap(
+      spacing: 20,
+      children: [
+        SizedBox(
+          width: 250,
+          child: DateTimeField(
+            format: DateFormat(simpleDayFormat),
+            decoration: inputDecoration('Início'),
+            onChanged: (e) {
+              setState(() {
+                startDate = e;
+              });
+            },
+            onShowPicker: (context, currentValue) async {
+              final date = await showDatePicker(
+                context: context,
+                firstDate: DateTime(minYear),
+                initialDate: (currentValue ?? DateTime.now()),
+                lastDate: DateTime(maxYear),
+              );
+              return date;
+            },
+          ),
+        ),
+        SizedBox(
+          width: 250,
+          child: DateTimeField(
+            format: DateFormat(simpleDayFormat),
+            decoration: inputDecoration('Fim'),
+            onChanged: (e) {
+              setState(() {
+                endDate = e;
+              });
+            },
+            onShowPicker: (context, currentValue) async {
+              final date = await showDatePicker(
+                context: context,
+                firstDate: DateTime(minYear),
+                initialDate: (currentValue ?? DateTime.now()),
+                lastDate: DateTime(maxYear),
+              );
+              if (date != null) {
+                endDate = date;
+              }
+              return date;
+            },
+          ),
+        ),
+        // const SizedBox(
+        //   width: 10,
+        // ),
+        // DateTimeField(
+        //   format: DateFormat(simpleDayFormat),
+        //   decoration: inputDecoration('Fim'),
+        //   onShowPicker: (context, currentValue) async {
+        //     final date = await showDatePicker(
+        //       context: context,
+        //       firstDate: DateTime(2021),
+        //       initialDate: (currentValue ?? DateTime.now()),
+        //       lastDate: DateTime(2040),
+        //     );
+        //     if (date != null) {
+        //       endDate = date;
+        //     }
+        //     return date;
+        //   },
+        // )
+      ],
+    );
+  }
+
   Widget listProcedures(BuildContext context, AsyncSnapshot snapshot) {
     return Wrap(
       spacing: 20,
@@ -61,13 +148,6 @@ class _ProcedurePageState extends State<ProcedurePage> {
           .map<Widget>((doc) => procedureCard(context, doc))
           .toList(),
     );
-    // return ListView.builder(
-    //   itemCount: snapshot.data.docs.length,
-    //   itemBuilder: (BuildContext context, index) {
-    //     dynamic procedure = snapshot.data.docs[index];
-    //     return procedureCard(context, procedure);
-    //   },
-    // );
   }
 
   Widget procedureCard(context, procedure) {
@@ -75,10 +155,102 @@ class _ProcedurePageState extends State<ProcedurePage> {
       width: defaultCardWidth(context),
       child: Card(
         child: ListTile(
+          leading: tooltip(context, procedure),
           title: Text(dayAndHourFromTimestamp(procedure['date'])),
           subtitle: Text('${procedure['duration']} min'),
           trailing: _procedureActions(context, procedure),
         ),
+      ),
+    );
+  }
+
+  Widget tooltip(context, procedure) {
+    return Builder(
+      builder: (BuildContext context) {
+        return InkWell(
+          child: const Icon(Icons.search),
+          onTap: () {
+            SuperTooltip tooltip = SuperTooltip(
+              maxWidth: 350,
+              popupDirection: TooltipDirection.down,
+              showCloseButton: ShowCloseButton.inside,
+              content: Material(
+                  child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: FutureBuilder(
+                  future: systemCollection.get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Text('Erro ao iniciar o Firebase');
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.done) {
+                      return tooltipBody(context, procedure, snapshot);
+                    }
+
+                    return loading();
+                  },
+                ),
+              )),
+            );
+
+            tooltip.show(context);
+          },
+        );
+      },
+    );
+  }
+
+  tooltipBody(BuildContext context, dynamic procedure, AsyncSnapshot snapshot) {
+    return SingleChildScrollView(
+      child: Column(
+        children: snapshot.data.docs
+            .map<Widget>((e) => boldTitleText(
+                title: e.data()['name'], text: getFieldText(e, procedure)))
+            .toList(),
+      ),
+    );
+  }
+
+  String getFieldText(field, procedure) {
+    String parameter = field.id;
+    List<dynamic> parameterOptions = field.data()['data'];
+    List<dynamic> rawValues = procedure.data()[parameter];
+    String out = '';
+    for (String rv in rawValues) {
+      dynamic gp = parameterOptions
+          .where((element) => element['symbol'] == rv)
+          .map<String>(
+            (e) => e['text'],
+          )
+          .toString();
+
+      out += gp.toString();
+    }
+
+    return out.replaceAll(')(', '; ').replaceAll('(', '').replaceAll(')', '');
+  }
+
+  Widget boldTitleText({required String title, required String text}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              '$title ',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              softWrap: true,
+            ),
+          ),
+          SizedBox(
+            width: 180,
+            child: Text(
+              text,
+              softWrap: true,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -111,10 +283,6 @@ class _ProcedurePageState extends State<ProcedurePage> {
           case 'Deletar':
             _deleteProcedure(context, procedure.id);
             print('Deletar');
-            break;
-
-          case 'Visualizar':
-            print('Visualizar');
             break;
         }
       },
