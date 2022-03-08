@@ -83,12 +83,12 @@ Future<void> alreadyLogged(VRedirector redirector) async {
 Future<void> isLoggedIn(
     VRedirector redirector, List<String> allowedRoles) async {
   if (await Authentication.isLoggedIn()) {
-    return;
+    if (allowedRoles.contains(AppController.instance.profile!.role)) {
+      return;
+    }
   }
-  if (allowedRoles.contains(AppController.instance.profile!.role)) {
-    redirector.to('/');
-  }
-  return;
+
+  redirector.to('/');
 }
 
 var routes = <String, WidgetBuilder>{

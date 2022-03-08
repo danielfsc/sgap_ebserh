@@ -31,8 +31,8 @@ class AppController extends ChangeNotifier {
 
   Future<void> setUser(User? user) async {
     if (user == null) {
-      _user == null;
-      _profile == null;
+      _user = null;
+      _profile = null;
       return;
     }
     _user = user;

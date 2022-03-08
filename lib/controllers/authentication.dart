@@ -192,8 +192,8 @@ class Authentication {
       await _auth.signOut();
 
       await AppController.instance.setUser(null);
-      context.vRouter.to(endPoint);
-      // Navigator.of(context).popAndPushNamed(endPoint);
+
+      context.vRouter.to('/');
     } catch (e) {
       snackMessage(context, message: 'Tive um erro: ${e.toString()}');
     }
