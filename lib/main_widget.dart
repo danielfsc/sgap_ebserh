@@ -8,6 +8,7 @@ class MainWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VRouter(
+      logs: VLogs.none,
       theme: ThemeData(primarySwatch: Colors.blueGrey),
       debugShowCheckedModeBanner: false,
       initialUrl: '/',
@@ -15,20 +16,4 @@ class MainWidget extends StatelessWidget {
       routes: vRoutes,
     );
   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   return AnimatedBuilder(
-  //     animation: AppController.instance,
-  //     builder: (context, child) {
-  //       return MaterialApp(
-  //         theme: ThemeData(
-  //           primarySwatch: Colors.blueGrey,
-  //         ),
-  //         initialRoute: '/',
-  //         routes: routes,
-  //         title: 'SGAP - UFSC',
-  //       );
-  //     },
-  //   );
-  // }
 }

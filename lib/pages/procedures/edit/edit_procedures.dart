@@ -288,9 +288,9 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
 
     try {
       if (procedureId == null) {
-        await proceduresCollection(procedureOwner!).add(dataToSave);
+        proceduresCollection(procedureOwner!).add(dataToSave);
       } else {
-        await proceduresCollection(procedureOwner!)
+        proceduresCollection(procedureOwner!)
             .doc(procedureId)
             .update(dataToSave);
       }

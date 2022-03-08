@@ -14,11 +14,16 @@ import '../pages/users/edituser/edit_user_page.dart';
 import '../pages/users/users_page.dart';
 
 List<VRouteElement> vRoutes = [
-  VWidget(
-    path: '/',
-    widget: const LoginPage(),
+  VGuard(
+    beforeEnter: (vRedirector) async => alreadyLogged(vRedirector),
     stackedRoutes: [
-      VWidget(path: '/signup', widget: const SignUpPage()),
+      VWidget(
+        path: '/',
+        widget: const LoginPage(),
+        stackedRoutes: [
+          VWidget(path: '/signup', widget: const SignUpPage()),
+        ],
+      ),
     ],
   ),
   VGuard(
@@ -67,6 +72,13 @@ List<VRouteElement> vRoutes = [
     ],
   ),
 ];
+
+Future<void> alreadyLogged(VRedirector redirector) async {
+  if (await Authentication.isLoggedIn()) {
+    redirector.to('/home');
+  }
+  return;
+}
 
 Future<void> isLoggedIn(
     VRedirector redirector, List<String> allowedRoles) async {
