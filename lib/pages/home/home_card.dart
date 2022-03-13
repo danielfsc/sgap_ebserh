@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/shared/models/option_menu.dart';
 import 'package:vrouter/vrouter.dart';
+
+import '../../shared/models/option_menu.dart';
 
 class HomeCardWidget extends StatelessWidget {
   const HomeCardWidget(this.info, {Key? key}) : super(key: key);

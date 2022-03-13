@@ -2,16 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:sgap_ebserh/configs/collections.dart';
-import 'package:sgap_ebserh/configs/dates.dart';
-import 'package:sgap_ebserh/controllers/app_controller.dart';
-import 'package:sgap_ebserh/shared/widgets/multiselect/multiselect_formfield.dart';
-import 'package:sgap_ebserh/shared/widgets/snack_message.dart';
 import 'package:vrouter/vrouter.dart';
 
+import '../../../configs/collections.dart';
+import '../../../configs/dates.dart';
 import '../../../configs/decorations/input_decoration.dart';
+import '../../../controllers/app_controller.dart';
 import '../../../shared/widgets/date_form_field.dart';
 import '../../../shared/widgets/empty_loading.dart';
+import '../../../shared/widgets/multiselect/multiselect_formfield.dart';
+import '../../../shared/widgets/snack_message.dart';
 
 class EditProcedurePage extends StatefulWidget {
   const EditProcedurePage({Key? key}) : super(key: key);

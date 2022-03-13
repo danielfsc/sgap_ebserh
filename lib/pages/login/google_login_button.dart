@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/shared/widgets/snack_message.dart';
 
 import '../../controllers/authentication.dart';
 import '../../shared/widgets/empty_loading.dart';
+import '../../shared/widgets/snack_message.dart';
 
 class GoogleLoginButton extends StatefulWidget {
   const GoogleLoginButton({Key? key}) : super(key: key);

@@ -6,6 +6,7 @@ class SystemOption {
   String name;
   bool multiple;
   List<dynamic> data;
+
   SystemOption({
     required this.name,
     required this.multiple,

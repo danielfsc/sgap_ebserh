@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/configs/collections.dart';
-import 'package:sgap_ebserh/configs/widths.dart';
-import 'package:sgap_ebserh/shared/widgets/empty_loading.dart';
-import 'package:sgap_ebserh/shared/widgets/snack_message.dart';
 
+import '../../../configs/collections.dart';
+import '../../../configs/widths.dart';
+import '../../../shared/widgets/empty_loading.dart';
 import '../../../shared/widgets/show_alert.dart';
+import '../../../shared/widgets/snack_message.dart';
 
 class EditCategoriesPage extends StatefulWidget {
   const EditCategoriesPage({Key? key}) : super(key: key);

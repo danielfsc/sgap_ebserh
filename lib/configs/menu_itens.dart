@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/shared/models/option_menu.dart';
+
+import '../shared/models/option_menu.dart';
 
 List<OptionMenu> userMenu = [
   OptionMenu(Icons.data_saver_on, 'Novo procedimento', '/procedures/new', true,
       Colors.blueAccent),
   OptionMenu(
       Icons.receipt_long, 'Procedimentos', '/procedures', true, Colors.red),
-  OptionMenu(Icons.insights, 'Estatística', '/history', false, Colors.orange),
+  OptionMenu(Icons.insights, 'Estatística', '/statistics', true, Colors.orange),
 ];
 
 List<OptionMenu> preceptorMenu = [

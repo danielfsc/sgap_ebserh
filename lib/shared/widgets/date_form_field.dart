@@ -47,6 +47,7 @@ class DateTimeField extends FormField<DateTime> {
     // bool autovalidate = false,
     MaxLengthEnforcement maxLengthEnforcement = MaxLengthEnforcement.enforced,
     int maxLines = 1,
+    this.hideResetIcon = false,
     int? minLines,
     bool expands = false,
     int? maxLength,
@@ -135,6 +136,8 @@ class DateTimeField extends FormField<DateTime> {
   /// the icon will clear the text field. Set this to `null` to disable that
   /// behavior. Also, setting the suffix icon yourself will override this option.
   final Icon? resetIcon;
+
+  final bool hideResetIcon;
 
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -320,5 +323,6 @@ class _DateTimeFieldState extends FormFieldState<DateTime> {
   bool shouldShowClearIcon([InputDecoration? decoration]) =>
       widget.resetIcon != null &&
       (hasText || hasFocus) &&
-      decoration?.suffixIcon == null;
+      decoration?.suffixIcon == null &&
+      !widget.hideResetIcon;
 }

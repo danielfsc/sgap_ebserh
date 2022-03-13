@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sgap_ebserh/configs/menu_itens.dart';
-import 'package:sgap_ebserh/controllers/app_controller.dart';
-import 'package:sgap_ebserh/shared/models/option_menu.dart';
 import 'package:vrouter/vrouter.dart';
+import '../../configs/menu_itens.dart';
+import '../../controllers/app_controller.dart';
 import '../../controllers/authentication.dart';
+import '../models/option_menu.dart';
 import '../models/profile.dart';
 import '../widgets/empty_loading.dart';
 

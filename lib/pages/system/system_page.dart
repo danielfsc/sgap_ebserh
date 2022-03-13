@@ -1,6 +1,7 @@
+import './system_body.dart';
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/pages/system/system_body.dart';
-import 'package:sgap_ebserh/shared/pages/page_mask.dart';
+
+import '../../shared/pages/page_mask.dart';
 
 class SystemPage extends StatefulWidget {
   const SystemPage({Key? key}) : super(key: key);

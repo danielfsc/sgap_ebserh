@@ -1,9 +1,10 @@
+import './user_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/pages/users/user_card.dart';
-import 'package:sgap_ebserh/shared/models/show_user_model.dart';
-import 'package:sgap_ebserh/shared/widgets/empty_loading.dart';
 import 'package:vrouter/vrouter.dart';
+
+import '../../shared/models/show_user_model.dart';
+import '../../shared/widgets/empty_loading.dart';
 
 class UsersBody extends StatefulWidget {
   const UsersBody({Key? key}) : super(key: key);

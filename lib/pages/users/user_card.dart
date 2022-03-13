@@ -2,14 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sgap_ebserh/configs/cards_menu.dart';
-import 'package:sgap_ebserh/shared/models/show_user_model.dart';
-import 'package:sgap_ebserh/shared/widgets/snack_message.dart';
+
 import 'package:vrouter/vrouter.dart';
 
+import '../../configs/cards_menu.dart';
 import '../../configs/vars.dart';
+import '../../shared/models/show_user_model.dart';
 import '../../shared/widgets/empty_loading.dart';
 import '../../shared/widgets/show_alert.dart';
+import '../../shared/widgets/snack_message.dart';
 
 class UserCard extends StatefulWidget {
   final ShowUserModel user;
@@ -75,7 +76,12 @@ class _UserCardState extends State<UserCard> {
             case 'Relatório':
               break;
 
-            case 'Visualizar':
+            case 'Procedimentos':
+              context.vRouter.to('procedures/${user.email}');
+              break;
+
+            case 'Estatística':
+              context.vRouter.to('statistics/${user.email}');
               break;
 
             case 'Arquivar':

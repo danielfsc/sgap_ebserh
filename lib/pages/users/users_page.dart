@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/shared/pages/page_mask.dart';
 
+import '../../shared/pages/page_mask.dart';
 import 'users_body.dart';
 
 class UsersPage extends StatelessWidget {

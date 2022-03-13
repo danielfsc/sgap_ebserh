@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
-import 'package:sgap_ebserh/shared/models/option_menu.dart';
-import 'package:sgap_ebserh/shared/pages/body_mask.dart';
-import 'package:sgap_ebserh/shared/pages/menu.dart';
+
+import '../models/option_menu.dart';
+import 'body_mask.dart';
+import 'menu.dart';
 
 class PageMask extends StatefulWidget {
   final String title;

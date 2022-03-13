@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/controllers/app_controller.dart';
-import 'package:sgap_ebserh/controllers/authentication.dart';
-import 'package:sgap_ebserh/pages/procedures/edit/edit_procedures.dart';
-import 'package:sgap_ebserh/pages/procedures/procedures_page.dart';
-import 'package:sgap_ebserh/pages/system/edit/edit_categories_page.dart';
+import 'package:sgap_ebserh/pages/statistics/statistics_view.dart';
+
 import 'package:vrouter/vrouter.dart';
 
+import '../controllers/app_controller.dart';
+import '../controllers/authentication.dart';
 import '../pages/home/home_page.dart';
 import '../pages/login/login_page.dart';
+import '../pages/procedures/edit/edit_procedures.dart';
+import '../pages/procedures/procedures_page.dart';
+import '../pages/procedures/procedures_view.dart';
 import '../pages/signup/signup_page.dart';
+import '../pages/statistics/statistics_page.dart';
+import '../pages/system/edit/edit_categories_page.dart';
 import '../pages/system/system_page.dart';
 import '../pages/users/edituser/edit_user_page.dart';
 import '../pages/users/users_page.dart';
@@ -30,6 +34,7 @@ List<VRouteElement> vRoutes = [
     beforeEnter: (vRedirector) async =>
         isLoggedIn(vRedirector, ['student', 'preceptor', 'admin']),
     stackedRoutes: [
+      VWidget(path: '/statistics', widget: const StatisticsPage()),
       VWidget(path: '/home', widget: const HomePage()),
       VWidget(
         path: '/procedures',
@@ -37,7 +42,7 @@ List<VRouteElement> vRoutes = [
         stackedRoutes: [
           VWidget(path: 'new', widget: const EditProcedurePage()),
           VWidget(path: 'edit/:document', widget: const EditProcedurePage()),
-          VWidget(path: 'edit/:document/', widget: const EditProcedurePage()),
+          // VWidget(path: 'edit/:document/', widget: const EditProcedurePage()),
         ],
       ),
       VWidget(
@@ -59,6 +64,8 @@ List<VRouteElement> vRoutes = [
         stackedRoutes: [
           VWidget(path: 'newuser', widget: const EditUser()),
           VWidget(path: 'edituser/:email', widget: const EditUser()),
+          VWidget(path: 'statistics/:userId', widget: const StatisticsView()),
+          VWidget(path: 'procedures/:userId', widget: const ProceduresView()),
         ],
       ),
     ],

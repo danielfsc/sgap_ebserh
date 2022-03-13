@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/shared/models/system_option.dart';
-import 'package:sgap_ebserh/shared/widgets/empty_loading.dart';
 import 'package:vrouter/vrouter.dart';
 
+import '../../shared/models/system_option.dart';
+import '../../shared/widgets/empty_loading.dart';
 import '../../shared/widgets/show_alert.dart';
 
 class SystemBody extends StatefulWidget {
@@ -16,6 +16,8 @@ class SystemBody extends StatefulWidget {
 class _SystemBodyState extends State<SystemBody> {
   String? selectedSystem;
 
+  List<dynamic> systemData = [];
+
   CollectionReference systemCollection =
       FirebaseFirestore.instance.collection('system');
 
@@ -25,24 +27,25 @@ class _SystemBodyState extends State<SystemBody> {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(
-      children: [
-        const SizedBox(height: 30),
-        TextButton(
-          onPressed: () {
-            context.vRouter.to('editcategories');
-          },
-          child: const Text('Modificar os campos'),
-        ),
-        const SizedBox(height: 30),
-        _systemSelectionWidget(),
-        Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: _addButton(context),
-        ),
-        _buildSelectedSystem(context),
-      ],
-    ));
+      child: Column(
+        children: [
+          const SizedBox(height: 30),
+          TextButton(
+            onPressed: () {
+              context.vRouter.to('editcategories');
+            },
+            child: const Text('Modificar os campos'),
+          ),
+          const SizedBox(height: 30),
+          _systemSelectionWidget(),
+          Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: _addButton(context),
+          ),
+          Expanded(child: _buildSelectedSystem(context)),
+        ],
+      ),
+    );
   }
 
   Widget _buildSelectedSystem(BuildContext context) {
@@ -60,43 +63,84 @@ class _SystemBodyState extends State<SystemBody> {
                 SystemOption system =
                     SystemOption.fromMap(snapshot.data.data());
 
-                return _showData(context, system);
+                return _showReordableData(context, system);
               }
               return loading();
             });
   }
 
-  Widget _showData(BuildContext context, SystemOption system) {
-    return Expanded(
-      child: SizedBox(
-        width: 350,
-        child: ListView.builder(
-            itemCount: system.data.length,
-            itemBuilder: (context, index) {
-              dynamic value = system.data[index];
-              return SizedBox(
-                width: 350,
-                child: Card(
-                  child: ListTile(
-                    title: Text(value['text']),
-                    subtitle: Text(value['symbol']),
-                    onLongPress: () {
-                      deleteData(
-                          context: context, system: system, index: index);
-                    },
-                    trailing: IconButton(
-                        onPressed: () {
-                          editDialog(
-                              context: context, system: system, index: index);
-                        },
-                        icon: const Icon(Icons.edit)),
-                  ),
+  Widget _showReordableData(BuildContext context, SystemOption system) {
+    systemData = system.data;
+    return SizedBox(
+      width: 350,
+      child: ReorderableListView(
+          children: systemData.map<Widget>((data) {
+            int index = systemData.indexOf(data);
+            return Card(
+              key: ValueKey(data),
+              child: ListTile(
+                title: Text(
+                  data['text'],
+                  softWrap: true,
                 ),
-              );
-            }),
-      ),
+                subtitle: Text(data['symbol']),
+                onLongPress: () {
+                  deleteData(context: context, system: system, index: index);
+                },
+                trailing: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+                  child: IconButton(
+                      onPressed: () {
+                        editDialog(
+                            context: context, system: system, index: index);
+                      },
+                      icon: const Icon(Icons.edit)),
+                ),
+              ),
+            );
+          }).toList(),
+          onReorder: (oldIndex, newIndex) {
+            dynamic document = systemData.removeAt(oldIndex);
+            systemData.insert(
+                newIndex > oldIndex ? newIndex - 1 : newIndex, document);
+            systemCollection.doc(selectedSystem).update({'data': systemData});
+
+            setState(() {});
+          }),
     );
   }
+
+  // Widget _showData(BuildContext context, SystemOption system) {
+  //   return Expanded(
+  //     child: SizedBox(
+  //       width: 350,
+  //       child: ListView.builder(
+  //           itemCount: system.data.length,
+  //           itemBuilder: (context, index) {
+  //             dynamic value = system.data[index];
+  //             return SizedBox(
+  //               width: 350,
+  //               child: Card(
+  //                 child: ListTile(
+  //                   title: Text(value['text']),
+  //                   subtitle: Text(value['symbol']),
+  //                   onLongPress: () {
+  //                     deleteData(
+  //                         context: context, system: system, index: index);
+  //                   },
+  //                   trailing: IconButton(
+  //                       onPressed: () {
+  //                         editDialog(
+  //                             context: context, system: system, index: index);
+  //                       },
+  //                       icon: const Icon(Icons.edit)),
+  //                 ),
+  //               ),
+  //             );
+  //           }),
+  //     ),
+  //   );
+  // }
 
   Future<void> deleteData(
       {required BuildContext context,

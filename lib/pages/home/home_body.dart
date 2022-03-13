@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/configs/menu_itens.dart';
 
+import '../../configs/menu_itens.dart';
 import '../../controllers/app_controller.dart';
 import '../../controllers/authentication.dart';
 import '../../shared/models/profile.dart';

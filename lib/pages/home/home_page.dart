@@ -1,5 +1,5 @@
+import './home_body.dart';
 import 'package:flutter/material.dart';
-import 'package:sgap_ebserh/pages/home/home_body.dart';
 
 import '../../shared/pages/page_mask.dart';
 

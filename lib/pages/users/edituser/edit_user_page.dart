@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sgap_ebserh/configs/dates.dart';
-import 'package:sgap_ebserh/configs/decorations/input_decoration.dart';
-import 'package:sgap_ebserh/configs/widths.dart';
-import 'package:sgap_ebserh/controllers/app_controller.dart';
-import 'package:sgap_ebserh/controllers/authentication.dart';
-import 'package:sgap_ebserh/shared/widgets/date_form_field.dart';
-import 'package:sgap_ebserh/shared/widgets/snack_message.dart';
 import 'package:vrouter/vrouter.dart';
+
+import '../../../configs/dates.dart';
+import '../../../configs/decorations/input_decoration.dart';
+import '../../../configs/widths.dart';
+import '../../../controllers/app_controller.dart';
+import '../../../controllers/authentication.dart';
+import '../../../shared/widgets/date_form_field.dart';
+import '../../../shared/widgets/snack_message.dart';
 //import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class EditUser extends StatefulWidget {
