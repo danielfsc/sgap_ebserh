@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'multiselect_dialog.dart';
+import './multiselect_dialog.dart';
 
 class MultiSelectFormField extends FormField<dynamic> {
   final Widget title;
@@ -70,46 +70,55 @@ class MultiSelectFormField extends FormField<dynamic> {
           initialValue: initialValue,
           autovalidateMode: autovalidate,
           builder: (FormFieldState<dynamic> state) {
+            print('Construindo opções selecionadas');
             List<Widget> _buildSelectedOptions(state) {
               List<Widget> selectedOptions = [];
+              print('Construindo opções selecionadas');
 
               if (state.value != null) {
+                print('Vou varrer os valores');
                 state.value.forEach((item) {
+                  print('Chamei SingleWhere');
                   var existingItem = dataSource!.singleWhere(
                       ((itm) => itm[valueField] == item),
                       orElse: () => null);
-                  selectedOptions.add(Chip(
-                    labelStyle: chipLabelStyle,
-                    backgroundColor: chipBackGroundColor,
-                    label: Text(
-                      existingItem[textField],
-                      overflow: TextOverflow.ellipsis,
+
+                  print('Chamei add');
+                  selectedOptions.add(
+                    Chip(
+                      labelStyle: chipLabelStyle,
+                      backgroundColor: chipBackGroundColor,
+                      label: Text(
+                        existingItem[textField],
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ));
+                  );
                 });
               }
-
+              print('retornando selectedOptions');
               return selectedOptions;
             }
 
+            print('Retornando InkWell');
             return InkWell(
               onTap: !enabled
                   ? null
                   : () async {
                       List? initialSelected = state.value ?? [];
-                      // if (initialSelected == null) {
-                      //   initialSelected = [];
-                      // }
 
+                      print('Vou abrir o diálogo');
                       final items = <MultiSelectDialogItem<dynamic>>[];
                       dataSource!.forEach((item) {
                         items.add(MultiSelectDialogItem(
                             item[valueField], item[textField]));
                       });
+                      print('Agora vou abrir com o showDialog');
 
                       List? selectedValues = await showDialog<List>(
                         context: state.context,
                         builder: (BuildContext context) {
+                          print('vou criar o MultiSelectDialog');
                           return MultiSelectDialog(
                             title: title,
                             isMultiSelection: isMultiSelection,
@@ -138,7 +147,7 @@ class MultiSelectFormField extends FormField<dynamic> {
                   fillColor: fillColor ?? Theme.of(state.context).canvasColor,
                   border: border ?? const UnderlineInputBorder(),
                 ),
-                isEmpty: state.value == null || state.value == '',
+                // isEmpty: state.value == null || state.value == '',
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[

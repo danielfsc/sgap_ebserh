@@ -14,6 +14,7 @@ import '../../controllers/helper/save_file_mobile.dart'
     as helper;
 
 import '../../shared/widgets/empty_loading.dart';
+
 import '../../shared/widgets/multiselect/multiselect_formfield.dart';
 
 class FullReportBody extends StatefulWidget {
@@ -39,9 +40,9 @@ class _FullReportBodyState extends State<FullReportBody> {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _studentsSelection(context),
+          // _streamData(context),
           Expanded(child: _streamData(context)),
           _saveButton(context),
         ],
@@ -56,7 +57,7 @@ class _FullReportBodyState extends State<FullReportBody> {
             future: requestProcedures(context),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return _tableAndButtons(context);
+                return _table(context);
               }
               return loading();
             },
@@ -84,27 +85,32 @@ class _FullReportBodyState extends State<FullReportBody> {
   }
 
   Future<AsyncSnapshot<dynamic>> requestProcedures(BuildContext context) async {
+    print('87: pedindo procedimentos ');
     tableRawData = [];
     for (String student in students) {
       dynamic studentInfo = await usersCollection.doc(student).get();
       QuerySnapshot procedures =
           await proceduresCollection(student).orderBy('date').get();
+      print('Definindo table ');
       await setTable(user: studentInfo, procedures: procedures);
     }
+    print('Terminei o RequestProcedures');
     return const AsyncSnapshot.withData(ConnectionState.done, 'ok');
   }
 
   Future<void> setTable(
       {required dynamic user, required QuerySnapshot procedures}) async {
+    print('Inicio da definição da tabela');
     Map<String, dynamic> userdata = user.data() as Map<String, dynamic>;
 
     for (QueryDocumentSnapshot doc in procedures.docs) {
       tableRawData.add({...userdata, ...doc.data() as Map<String, dynamic>});
     }
+    print('gerando as colunas');
     tableColumns = await generateColumns();
   }
 
-  Widget _tableAndButtons(BuildContext context) {
+  Widget _table(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -128,6 +134,7 @@ class _FullReportBodyState extends State<FullReportBody> {
   }
 
   Widget _studentsSelection(BuildContext context) {
+    print('Montei o select');
     return StreamBuilder(
         stream: getUsers(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -146,11 +153,11 @@ class _FullReportBodyState extends State<FullReportBody> {
         .map((doc) => {'value': doc.id, 'text': doc.data()['name'] ?? doc.id})
         .toList();
     setStudentsData(snapshot.data.docs);
+    print('Retornado o select box');
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: MultiSelectFormField(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-        isMultiSelection: true,
         autovalidate: AutovalidateMode.onUserInteraction,
         chipBackGroundColor: Colors.blueGrey,
         chipLabelStyle:
@@ -174,7 +181,9 @@ class _FullReportBodyState extends State<FullReportBody> {
         onSaved: (value) {
           if (value == null) return;
           setState(() {
+            print('Definindo os students');
             students = value.cast<String>();
+            print('students definido');
           });
         },
       ),
@@ -182,10 +191,13 @@ class _FullReportBodyState extends State<FullReportBody> {
   }
 
   void setStudentsData(List<QueryDocumentSnapshot> docs) {
+    print('Definindo usuários');
     studentsData = docs;
   }
 
   Stream getUsers() {
+    print('pegando usuários');
+
     if (AppController.instance.profile!.role == 'preceptor') {
       return usersCollection
           .where('archived', isEqualTo: false)
