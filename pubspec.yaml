@@ -50,6 +50,11 @@ dependencies:
 
   fl_chart: ^0.46.0
 
+  syncfusion_flutter_datagrid: ^19.4.55
+  syncfusion_flutter_core: ^19.4.55
+  syncfusion_flutter_datagrid_export: ^19.4.55-beta
+  syncfusion_flutter_xlsio: ^19.4.55-beta
+  open_file: ^3.2.1
   
 
   prompt_dialog: ^1.0.6

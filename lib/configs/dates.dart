@@ -8,6 +8,7 @@ String chartDayDate = 'dd/MM';
 String simpleDayFormat = 'dd/MM/yy';
 
 String dayAndHourFormat = "dd MMM yy - HH:mm";
+String simpleDayHourFormat = "dd/MM/yy - HH:mm";
 
 String dayFromTimestamp(date) =>
     DateFormat(dayFormat).format(DateTime.parse(date.toDate().toString()));

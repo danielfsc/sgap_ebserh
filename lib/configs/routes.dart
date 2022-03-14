@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sgap_ebserh/pages/fullreport/fullreport_page.dart';
 import 'package:sgap_ebserh/pages/statistics/statistics_view.dart';
 
 import 'package:vrouter/vrouter.dart';
@@ -58,6 +59,7 @@ List<VRouteElement> vRoutes = [
     beforeEnter: (vRedirector) async =>
         isLoggedIn(vRedirector, ['preceptor', 'admin']),
     stackedRoutes: [
+      VWidget(path: '/fullreport', widget: const FullReportPage()),
       VWidget(
         path: '/users',
         widget: const UsersPage(),

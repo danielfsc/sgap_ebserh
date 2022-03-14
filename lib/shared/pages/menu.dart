@@ -83,7 +83,8 @@ class _MenuPageState extends State<MenuPage> {
                   fit: BoxFit.fitHeight,
                   imageUrl: _profile!.photoURL,
                   placeholder: (context, url) => loading(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  errorWidget: (context, url, error) =>
+                      Image.asset('assets/nullphoto.png'),
                 ),
               ),
             ),

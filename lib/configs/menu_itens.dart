@@ -7,14 +7,14 @@ List<OptionMenu> userMenu = [
       Colors.blueAccent),
   OptionMenu(
       Icons.receipt_long, 'Procedimentos', '/procedures', true, Colors.red),
-  OptionMenu(Icons.insights, 'Estatística', '/statistics', true, Colors.orange),
+  OptionMenu(Icons.insights, 'Estatística', '/statistics', true, Colors.green),
 ];
 
 List<OptionMenu> preceptorMenu = [
   OptionMenu(
       Icons.school, 'Meus Estudantes', '/students', false, Colors.blueAccent),
   OptionMenu(
-      Icons.manage_search, 'Relatórios', '/reports', false, Colors.orange),
+      Icons.table_chart, 'Relatórios', '/fullreport', true, Colors.orange),
 ];
 
 List<OptionMenu> adminMenu = [
