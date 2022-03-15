@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sgap_ebserh/pages/fullreport/fullreport_page.dart';
 import 'package:sgap_ebserh/pages/statistics/statistics_view.dart';
+import 'package:sgap_ebserh/pages/students/students_page.dart';
 
 import 'package:vrouter/vrouter.dart';
 
@@ -60,6 +61,14 @@ List<VRouteElement> vRoutes = [
         isLoggedIn(vRedirector, ['preceptor', 'admin']),
     stackedRoutes: [
       VWidget(path: '/fullreport', widget: const FullReportPage()),
+      VWidget(
+        path: '/students',
+        widget: const StudentsPage(),
+        stackedRoutes: [
+          VWidget(path: 'statistics/:userId', widget: const StatisticsView()),
+          VWidget(path: 'procedures/:userId', widget: const ProceduresView()),
+        ],
+      ),
       VWidget(
         path: '/users',
         widget: const UsersPage(),

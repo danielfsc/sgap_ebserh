@@ -1,15 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:sgap_ebserh/shared/widgets/date_interval.dart';
 import 'package:vrouter/vrouter.dart';
 
 import '../../configs/cards_menu.dart';
 import '../../configs/collections.dart';
 import '../../configs/dates.dart';
-import '../../configs/decorations/input_decoration.dart';
 import '../../configs/widths.dart';
 import '../../controllers/app_controller.dart';
-import '../../shared/widgets/date_form_field.dart';
 import '../../shared/widgets/empty_loading.dart';
 import '../../shared/widgets/show_alert.dart';
 import '../../shared/widgets/snack_message.dart';
@@ -25,8 +23,8 @@ class ProceduresBody extends StatefulWidget {
 class _ProceduresBodyState extends State<ProceduresBody> {
   String? userId;
 
-  DateTime? startDate;
-  DateTime? endDate;
+  DateTime startDate = DateTime(DateTime.now().year);
+  DateTime endDate = DateTime.now();
 
   bool isOwner = true;
 
@@ -41,15 +39,26 @@ class _ProceduresBodyState extends State<ProceduresBody> {
       child: Column(
         children: [
           const SizedBox(height: 30),
-          _dateInterval(context),
+          DateInterval(
+            start: startDate,
+            end: endDate,
+            hideResetIcon: true,
+            width: 150,
+            onChange: (value) {
+              if (value.length == 2) {
+                setState(() {
+                  startDate = value[0];
+                  endDate = value[1];
+                });
+              }
+            },
+          ),
           const SizedBox(height: 30),
           StreamBuilder(
               stream: proceduresCollection(userId!)
                   .orderBy('date')
-                  .where('date',
-                      isLessThanOrEqualTo: endDate ?? DateTime(maxYear))
-                  .where('date',
-                      isGreaterThanOrEqualTo: startDate ?? DateTime(minYear))
+                  .where('date', isLessThanOrEqualTo: endDate)
+                  .where('date', isGreaterThanOrEqualTo: startDate)
                   .snapshots(),
               builder: (context, AsyncSnapshot snapshot) {
                 if (!snapshot.hasData) {
@@ -67,59 +76,6 @@ class _ProceduresBodyState extends State<ProceduresBody> {
               : const SizedBox.shrink(),
         ],
       ),
-    );
-  }
-
-  Widget _dateInterval(context) {
-    return Wrap(
-      spacing: 20,
-      children: [
-        SizedBox(
-          width: 250,
-          child: DateTimeField(
-            format: DateFormat(simpleDayFormat),
-            decoration: inputDecoration('Início'),
-            onChanged: (e) {
-              setState(() {
-                startDate = e;
-              });
-            },
-            onShowPicker: (context, currentValue) async {
-              final date = await showDatePicker(
-                context: context,
-                firstDate: DateTime(minYear),
-                initialDate: (currentValue ?? DateTime.now()),
-                lastDate: DateTime(maxYear),
-              );
-              return date;
-            },
-          ),
-        ),
-        SizedBox(
-          width: 250,
-          child: DateTimeField(
-            format: DateFormat(simpleDayFormat),
-            decoration: inputDecoration('Fim'),
-            onChanged: (e) {
-              setState(() {
-                endDate = e;
-              });
-            },
-            onShowPicker: (context, currentValue) async {
-              final date = await showDatePicker(
-                context: context,
-                firstDate: DateTime(minYear),
-                initialDate: (currentValue ?? DateTime.now()),
-                lastDate: DateTime(maxYear),
-              );
-              if (date != null) {
-                endDate = date;
-              }
-              return date;
-            },
-          ),
-        ),
-      ],
     );
   }
 

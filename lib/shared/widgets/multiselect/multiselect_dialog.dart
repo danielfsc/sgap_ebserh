@@ -42,16 +42,12 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
 
   @override
   void initState() {
-    print('INITSTATE - DIALOG');
     super.initState();
-    print('problema no initState()');
     if (widget.initialSelectedValues != null) {
-      print('Initial selected value is not null');
-
-      _selectedValues.addAll(widget.initialSelectedValues!);
-      print('values added');
+      if (widget.initialSelectedValues!.isNotEmpty) {
+        _selectedValues.add(widget.initialSelectedValues![0]);
+      }
     }
-    print('FINISH INITSTATE');
   }
 
   void _onItemCheckedChange(V itemValue, bool? checked) {
@@ -83,7 +79,6 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
 
   @override
   Widget build(BuildContext context) {
-    print('START BUILD');
     return AlertDialog(
       title: widget.title,
       shape: widget.dialogShapeBorder,

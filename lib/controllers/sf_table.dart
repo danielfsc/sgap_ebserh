@@ -19,7 +19,6 @@ class TableDataSource extends DataGridSource {
   List<DataGridCell> getRowCells(Map<String, dynamic> row) {
     List<DataGridCell> out = [];
     for (GridColumn column in _columns) {
-      // print(column.columnName)
       dynamic value = row[column.columnName];
       out.add(
         DataGridCell(

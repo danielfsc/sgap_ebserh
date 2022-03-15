@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sgap_ebserh/configs/collections.dart';
+import 'package:sgap_ebserh/configs/widths.dart';
 import 'package:sgap_ebserh/controllers/app_controller.dart';
 import 'package:sgap_ebserh/controllers/sf_table.dart';
+import 'package:sgap_ebserh/shared/widgets/date_interval.dart';
+import 'package:sgap_ebserh/shared/widgets/multi_select/multi_select_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid_export/export.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart'
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio
     hide Alignment, Column, Row;
 
 import '../../controllers/helper/save_file_mobile.dart'
@@ -14,8 +17,12 @@ import '../../controllers/helper/save_file_mobile.dart'
     as helper;
 
 import '../../shared/widgets/empty_loading.dart';
+// import '../../shared/widgets/multi_select/dialog/multi_select_dialog_field.dart';
+// import '../../shared/widgets/multi_select/util/multi_select_item.dart';
 
-import '../../shared/widgets/multiselect/multiselect_formfield.dart';
+// import '../../shared/widgets/multiselect/multiselect_formfield.dart';
+
+// import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class FullReportBody extends StatefulWidget {
   const FullReportBody({Key? key}) : super(key: key);
@@ -26,6 +33,9 @@ class FullReportBody extends StatefulWidget {
 
 class _FullReportBodyState extends State<FullReportBody> {
   List<String> students = [];
+
+  DateTime startDate = DateTime(DateTime.now().year);
+  DateTime endDate = DateTime.now();
 
   List<QueryDocumentSnapshot> studentsData = [];
 
@@ -41,7 +51,30 @@ class _FullReportBodyState extends State<FullReportBody> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _studentsSelection(context),
+          Wrap(
+            runSpacing: 10,
+            spacing: 10,
+            children: [
+              DateInterval(
+                start: startDate,
+                end: endDate,
+                hideResetIcon: true,
+                width: 100,
+                onChange: (value) {
+                  if (value.length == 2) {
+                    setState(() {
+                      startDate = value[0];
+                      endDate = value[1];
+                    });
+                  }
+                },
+              ),
+              SizedBox(
+                width: mediunWidth(context),
+                child: _studentsSelection(context),
+              ),
+            ],
+          ),
           // _streamData(context),
           Expanded(child: _streamData(context)),
           _saveButton(context),
@@ -72,7 +105,7 @@ class _FullReportBodyState extends State<FullReportBody> {
               icon: const Icon(Icons.download),
               label: const Text('Exportar para Excel'),
               onPressed: () async {
-                final Workbook workbook =
+                final xlsio.Workbook workbook =
                     key.currentState!.exportToExcelWorkbook();
                 final List<int> bytes = workbook.saveAsStream();
                 workbook.dispose();
@@ -85,28 +118,26 @@ class _FullReportBodyState extends State<FullReportBody> {
   }
 
   Future<AsyncSnapshot<dynamic>> requestProcedures(BuildContext context) async {
-    print('87: pedindo procedimentos ');
     tableRawData = [];
     for (String student in students) {
       dynamic studentInfo = await usersCollection.doc(student).get();
-      QuerySnapshot procedures =
-          await proceduresCollection(student).orderBy('date').get();
-      print('Definindo table ');
+      QuerySnapshot procedures = await proceduresCollection(student)
+          .orderBy('date')
+          .where('date', isGreaterThanOrEqualTo: startDate)
+          .where('date', isLessThanOrEqualTo: endDate)
+          .get();
       await setTable(user: studentInfo, procedures: procedures);
     }
-    print('Terminei o RequestProcedures');
     return const AsyncSnapshot.withData(ConnectionState.done, 'ok');
   }
 
   Future<void> setTable(
       {required dynamic user, required QuerySnapshot procedures}) async {
-    print('Inicio da definição da tabela');
     Map<String, dynamic> userdata = user.data() as Map<String, dynamic>;
 
     for (QueryDocumentSnapshot doc in procedures.docs) {
       tableRawData.add({...userdata, ...doc.data() as Map<String, dynamic>});
     }
-    print('gerando as colunas');
     tableColumns = await generateColumns();
   }
 
@@ -134,7 +165,6 @@ class _FullReportBodyState extends State<FullReportBody> {
   }
 
   Widget _studentsSelection(BuildContext context) {
-    print('Montei o select');
     return StreamBuilder(
         stream: getUsers(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -149,55 +179,81 @@ class _FullReportBodyState extends State<FullReportBody> {
   }
 
   Widget _studentsMultiSelection(BuildContext context, AsyncSnapshot snapshot) {
-    List<dynamic> datasource = snapshot.data.docs
-        .map((doc) => {'value': doc.id, 'text': doc.data()['name'] ?? doc.id})
+    List<MultiSelectItem> items = snapshot.data.docs
+        .map((doc) => MultiSelectItem(doc.id, doc.data()['name'] ?? doc.id))
+        .cast<MultiSelectItem>()
         .toList();
     setStudentsData(snapshot.data.docs);
-    print('Retornado o select box');
     return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: MultiSelectFormField(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-        autovalidate: AutovalidateMode.onUserInteraction,
-        chipBackGroundColor: Colors.blueGrey,
-        chipLabelStyle:
-            const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        dialogTextStyle: const TextStyle(fontWeight: FontWeight.bold),
-        checkBoxActiveColor: Colors.blue,
-        checkBoxCheckColor: Colors.white,
-        dialogShapeBorder: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12.0))),
-        title: const Text(
-          "Selecione os residentes",
-          style: TextStyle(fontSize: 16),
-        ),
-        dataSource: datasource,
-        textField: 'text',
-        valueField: 'value',
+      padding: const EdgeInsets.all(12.0),
+      child: MultiSelectDialogField(
         initialValue: students,
-        okButtonLabel: 'OK',
-        cancelButtonLabel: 'Cancelar',
-        hintWidget: const Text('Selecione ao menos uma opção ou mais'),
-        onSaved: (value) {
-          if (value == null) return;
+        items: items,
+        dialogWidth: defaultCardWidth(context),
+        searchable: true,
+        chipShowTextStyle: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+        separateSelectedItems: true,
+        title: const Text("Residentes"),
+        selectedColor: Colors.blueGrey,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black, width: 1),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        buttonIcon: const Icon(Icons.arrow_drop_down,
+            color: Colors.black87, size: 25.0),
+        buttonText: const Text(
+          "Residentes",
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        onConfirm: (results) {
           setState(() {
-            print('Definindo os students');
-            students = value.cast<String>();
-            print('students definido');
+            students = results.cast<String>();
           });
         },
       ),
+
+      // MultiSelectFormField(
+      //   border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+      //   autovalidate: AutovalidateMode.onUserInteraction,
+      //   chipBackGroundColor: Colors.blueGrey,
+      //   chipLabelStyle:
+      //       const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      //   dialogTextStyle: const TextStyle(fontWeight: FontWeight.bold),
+      //   checkBoxActiveColor: Colors.blue,
+      //   checkBoxCheckColor: Colors.white,
+      //   dialogShapeBorder: const RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.all(Radius.circular(12.0))),
+      //   title: const Text(
+      //     "Selecione os residentes",
+      //     style: TextStyle(fontSize: 16),
+      //   ),
+      //   dataSource: datasource,
+      //   textField: 'text',
+      //   valueField: 'value',
+      //   initialValue: students,
+      //   okButtonLabel: 'OK',
+      //   cancelButtonLabel: 'Cancelar',
+      //   hintWidget: const Text('Selecione ao menos uma opção ou mais'),
+      //   onSaved: (value) {
+      //     if (value == null) return;
+      //     setState(() {
+      //       students = value.cast<String>();
+      //     });
+      //   },
+      // ),
     );
   }
 
   void setStudentsData(List<QueryDocumentSnapshot> docs) {
-    print('Definindo usuários');
     studentsData = docs;
   }
 
   Stream getUsers() {
-    print('pegando usuários');
-
     if (AppController.instance.profile!.role == 'preceptor') {
       return usersCollection
           .where('archived', isEqualTo: false)

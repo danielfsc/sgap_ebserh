@@ -5,12 +5,12 @@ import '../controllers/sf_table.dart';
 List<GridColumn> userColumn = [
   GridColumn(
     columnName: 'name',
-    width: 200,
+    width: 150,
     label: columnCell('nome'),
   ),
   GridColumn(
     columnName: 'crm',
-    width: 100,
+    // width: 100,
     label: columnCell('CRM'),
   ),
   GridColumn(

@@ -11,6 +11,11 @@ var userCardMenu = [
   // IconMenu('Deletar', Icons.delete, isPublic: false),
 ];
 
+var userCardMenuToPreceptor = [
+  IconMenu('Procedimentos', Icons.receipt_long),
+  IconMenu('Estatística', Icons.insights),
+];
+
 List<IconMenu> procedureCardMenu = [
   // IconMenu('Visualizar', Icons.visibility),
   IconMenu(

@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:sgap_ebserh/configs/widths.dart';
+import 'package:sgap_ebserh/shared/widgets/multi_select/chip_display/multi_select_chip_display.dart';
+import 'package:sgap_ebserh/shared/widgets/multi_select/util/horizontal_scrollbar.dart';
 import 'package:vrouter/vrouter.dart';
 
 import '../../../configs/collections.dart';
@@ -10,7 +13,8 @@ import '../../../configs/decorations/input_decoration.dart';
 import '../../../controllers/app_controller.dart';
 import '../../../shared/widgets/date_form_field.dart';
 import '../../../shared/widgets/empty_loading.dart';
-import '../../../shared/widgets/multiselect/multiselect_formfield.dart';
+import '../../../shared/widgets/multi_select/dialog/multi_select_dialog_field.dart';
+import '../../../shared/widgets/multi_select/util/multi_select_item.dart';
 import '../../../shared/widgets/snack_message.dart';
 
 class EditProcedurePage extends StatefulWidget {
@@ -230,45 +234,91 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
 
     String category = doc.id;
 
-    List<dynamic> dataSource = parameter['data'];
+    List<MultiSelectItem> items = parameter['data']
+        .map((p) => MultiSelectItem(p['symbol'], p['text']))
+        .cast<MultiSelectItem>()
+        .toList();
 
-    return MultiSelectFormField(
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-      isMultiSelection: parameter['multiple'],
-      autovalidate: AutovalidateMode.onUserInteraction,
-      chipBackGroundColor: Colors.blueGrey,
-      chipLabelStyle:
-          const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-      dialogTextStyle: const TextStyle(fontWeight: FontWeight.bold),
-      checkBoxActiveColor: Colors.blue,
-      checkBoxCheckColor: Colors.white,
-      dialogShapeBorder: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12.0))),
-      title: Text(
-        "${parameter['name']}",
-        style: const TextStyle(fontSize: 16),
+    return MultiSelectDialogField(
+      items: items,
+      searchable: items.length > 5,
+      isMultipleSelection: parameter['multiple'],
+      initialValue: selectedValues[category],
+      dialogWidth: defaultCardWidth(context),
+      dialogHeight: MediaQuery.of(context).size.height * (items.length * 0.08),
+      title: Text('${parameter['name']}'),
+      selectedColor: Colors.blueGrey,
+      chipDisplay: MultiSelectChipDisplay(
+        items: items,
+        scrollBar: HorizontalScrollBar(),
+        scroll: true,
       ),
+      chipShowTextStyle: const TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black, width: 1),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      ),
+      buttonIcon:
+          const Icon(Icons.arrow_drop_down, color: Colors.black87, size: 25.0),
+      buttonText: Text(
+        parameter['name'],
+        style: const TextStyle(
+          fontSize: 16,
+        ),
+      ),
+      onConfirm: (results) {
+        setState(() {
+          selectedValues[category] = results.cast<String>();
+        });
+      },
       validator: (value) {
-        if (value == null || value.length == 0) {
+        if (value == null || value.isEmpty) {
           return 'Selecione ao menos uma opção ${parameter['multiple'] ? "ou mais" : ''}';
         }
         return null;
       },
-      dataSource: dataSource,
-      textField: 'text',
-      valueField: 'symbol',
-      okButtonLabel: 'OK',
-      cancelButtonLabel: 'Cancelar',
-      hintWidget: Text(
-          'Selecione ao menos uma opção ${parameter['multiple'] ? "ou mais" : ''}'),
-      initialValue: selectedValues[category],
-      onSaved: (value) {
-        if (value == null) return;
-        setState(() {
-          selectedValues[category] = value;
-        });
-      },
     );
+
+    // MultiSelectFormField(
+    //   border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+    //   isMultiSelection: parameter['multiple'],
+    //   autovalidate: AutovalidateMode.onUserInteraction,
+    //   chipBackGroundColor: Colors.blueGrey,
+    //   chipLabelStyle:
+    //       const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+    //   dialogTextStyle: const TextStyle(fontWeight: FontWeight.bold),
+    //   checkBoxActiveColor: Colors.blue,
+    //   checkBoxCheckColor: Colors.white,
+    //   dialogShapeBorder: const RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.all(Radius.circular(12.0))),
+    //   title: Text(
+    //     "${parameter['name']}",
+    //     style: const TextStyle(fontSize: 16),
+    //   ),
+    //   validator: (value) {
+    //     if (value == null || value.length == 0) {
+    //       return 'Selecione ao menos uma opção ${parameter['multiple'] ? "ou mais" : ''}';
+    //     }
+    //     return null;
+    //   },
+    //   dataSource: dataSource,
+    //   textField: 'text',
+    //   valueField: 'symbol',
+    //   okButtonLabel: 'OK',
+    //   cancelButtonLabel: 'Cancelar',
+    //   hintWidget: Text(
+    //       'Selecione ao menos uma opção ${parameter['multiple'] ? "ou mais" : ''}'),
+    //   initialValue: selectedValues[category],
+    //   onSaved: (value) {
+    //     if (value == null) return;
+    //     setState(() {
+    //       selectedValues[category] = value;
+    //     });
+    //   },
+    // );
   }
 
   Widget _submit(BuildContext context) {
