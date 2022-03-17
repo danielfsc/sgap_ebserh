@@ -419,58 +419,58 @@ class _StatisticsBodyState extends State<StatisticsBody> {
   List<FlSpot> getPoints(List<dynamic> values) {
     List<FlSpot> out = [];
     for (int i = 0; i < values.length; i++) {
-      out.add(FlSpot(i * 1.0, values[i]));
+      out.add(FlSpot(i * 1.0, values[i] * 1.0));
     }
     return out;
   }
 
-  List<BarChartGroupData> get barGroups => [
-        BarChartGroupData(
-          x: 0,
-          barRods: [
-            BarChartRodData(
-              toY: 80,
-              colors: [Colors.blue],
-            ),
-            BarChartRodData(toY: 20, colors: [Colors.red]),
-          ],
-        ),
-        BarChartGroupData(
-          x: 1,
-          barRods: [
-            BarChartRodData(
-                toY: 10, colors: [Colors.lightBlueAccent, Colors.greenAccent])
-          ],
-        ),
-        BarChartGroupData(
-          x: 2,
-          barRods: [
-            BarChartRodData(
-                toY: 14, colors: [Colors.lightBlueAccent, Colors.greenAccent])
-          ],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-                toY: 15, colors: [Colors.lightBlueAccent, Colors.greenAccent])
-          ],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-                toY: 13, colors: [Colors.lightBlueAccent, Colors.greenAccent])
-          ],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-                toY: 10, colors: [Colors.lightBlueAccent, Colors.greenAccent])
-          ],
-        ),
-      ];
+  // List<BarChartGroupData> get barGroups => [
+  //       BarChartGroupData(
+  //         x: 0,
+  //         barRods: [
+  //           BarChartRodData(
+  //             toY: 80,
+  //             colors: [Colors.blue],
+  //           ),
+  //           BarChartRodData(toY: 20, colors: [Colors.red]),
+  //         ],
+  //       ),
+  //       BarChartGroupData(
+  //         x: 1,
+  //         barRods: [
+  //           BarChartRodData(
+  //               toY: 10, colors: [Colors.lightBlueAccent, Colors.greenAccent])
+  //         ],
+  //       ),
+  //       BarChartGroupData(
+  //         x: 2,
+  //         barRods: [
+  //           BarChartRodData(
+  //               toY: 14, colors: [Colors.lightBlueAccent, Colors.greenAccent])
+  //         ],
+  //       ),
+  //       BarChartGroupData(
+  //         x: 3,
+  //         barRods: [
+  //           BarChartRodData(
+  //               toY: 15, colors: [Colors.lightBlueAccent, Colors.greenAccent])
+  //         ],
+  //       ),
+  //       BarChartGroupData(
+  //         x: 3,
+  //         barRods: [
+  //           BarChartRodData(
+  //               toY: 13, colors: [Colors.lightBlueAccent, Colors.greenAccent])
+  //         ],
+  //       ),
+  //       BarChartGroupData(
+  //         x: 3,
+  //         barRods: [
+  //           BarChartRodData(
+  //               toY: 10, colors: [Colors.lightBlueAccent, Colors.greenAccent])
+  //         ],
+  //       ),
+  //     ];
 
   Stream getProcedures() {
     return proceduresCollection(userId!)

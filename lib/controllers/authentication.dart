@@ -19,7 +19,9 @@ class Authentication {
       bool changeRoute = true}) async {
     try {
       FirebaseApp firebaseApp = await Firebase.initializeApp();
-      await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+      if (kIsWeb) {
+        await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+      }
 
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -27,7 +29,6 @@ class Authentication {
         await AppController.instance.setUser(user);
         if (changeRoute) {
           context.vRouter.to(endPoint);
-          // Navigator.of(context).popAndPushNamed(endPoint);
         }
       }
 

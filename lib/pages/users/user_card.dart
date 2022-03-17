@@ -36,9 +36,6 @@ class _UserCardState extends State<UserCard> {
           width: MediaQuery.of(context).size.width * 0.95 > 400
               ? 400
               : MediaQuery.of(context).size.width * 0.95,
-          height: MediaQuery.of(context).size.width * 0.10 > 250
-              ? 250
-              : MediaQuery.of(context).size.width * 0.10,
           child: Row(
             children: [
               _userPhoto(user.photoURL),

@@ -8,3 +8,5 @@ double defaultCardWidth(context) =>
 double mediunWidth(context) => MediaQuery.of(context).size.width * 0.8 > 450
     ? 450
     : MediaQuery.of(context).size.width * 0.8;
+
+double fullHeigth(context) => MediaQuery.of(context).size.height;

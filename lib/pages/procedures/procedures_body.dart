@@ -36,45 +36,47 @@ class _ProceduresBodyState extends State<ProceduresBody> {
     userId = context.vRouter.pathParameters['userId'] ??
         AppController.instance.user!.email;
     return Center(
-      child: Column(
-        children: [
-          const SizedBox(height: 30),
-          DateInterval(
-            start: startDate,
-            end: endDate,
-            hideResetIcon: true,
-            width: 150,
-            onChange: (value) {
-              if (value.length == 2) {
-                setState(() {
-                  startDate = value[0];
-                  endDate = value[1];
-                });
-              }
-            },
-          ),
-          const SizedBox(height: 30),
-          StreamBuilder(
-              stream: proceduresCollection(userId!)
-                  .orderBy('date')
-                  .where('date', isLessThanOrEqualTo: endDate)
-                  .where('date', isGreaterThanOrEqualTo: startDate)
-                  .snapshots(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
-                  return loading();
-                } else if (snapshot.data.docs.length == 0) {
-                  return const Text('Nenhum procedimento cadastrado');
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 30),
+            DateInterval(
+              start: startDate,
+              end: endDate,
+              hideResetIcon: true,
+              width: 150,
+              onChange: (value) {
+                if (value.length == 2) {
+                  setState(() {
+                    startDate = value[0];
+                    endDate = value[1];
+                  });
                 }
-                return listProcedures(context, snapshot);
-              }),
-          const SizedBox(height: 30),
-          isOwner
-              ? ElevatedButton(
-                  onPressed: () => context.vRouter.to('new'),
-                  child: const Text('Novo Procedimento'))
-              : const SizedBox.shrink(),
-        ],
+              },
+            ),
+            const SizedBox(height: 30),
+            StreamBuilder(
+                stream: proceduresCollection(userId!)
+                    .orderBy('date')
+                    .where('date', isLessThanOrEqualTo: endDate)
+                    .where('date', isGreaterThanOrEqualTo: startDate)
+                    .snapshots(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData) {
+                    return loading();
+                  } else if (snapshot.data.docs.length == 0) {
+                    return const Text('Nenhum procedimento cadastrado');
+                  }
+                  return listProcedures(context, snapshot);
+                }),
+            const SizedBox(height: 30),
+            isOwner
+                ? ElevatedButton(
+                    onPressed: () => context.vRouter.to('new'),
+                    child: const Text('Novo Procedimento'))
+                : const SizedBox.shrink(),
+          ],
+        ),
       ),
     );
   }
