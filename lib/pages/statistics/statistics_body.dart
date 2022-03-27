@@ -24,6 +24,8 @@ class StatisticsBody extends StatefulWidget {
 class _StatisticsBodyState extends State<StatisticsBody> {
   List<LineChartBarData> chartPoints = [];
 
+  List<BarChartGroupData> barChartPoints = [];
+
   int totalProcedures = 0;
   double totalHours = 0;
 
@@ -37,8 +39,19 @@ class _StatisticsBodyState extends State<StatisticsBody> {
   DateTime finalDate = DateTime.now();
 
   List<bool> isSelected = [true, false, false];
+  List<bool> isModeSelected = [true, false];
 
   String? userId;
+
+  final PageController _pageController = PageController(
+    initialPage: 0,
+  );
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +183,43 @@ class _StatisticsBodyState extends State<StatisticsBody> {
     );
   }
 
+  Widget _modeSelection(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(color: Colors.white),
+      child: ToggleButtons(
+        constraints: const BoxConstraints(maxWidth: 90, maxHeight: 40),
+        fillColor: Colors.blue,
+        selectedColor: Colors.white,
+        children: modeTypes
+            .map<Widget>((type) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(type['icon']),
+                ))
+            .toList(),
+        onPressed: (int index) {
+          setState(() {
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.ease,
+            );
+
+            for (int indexBtn = 0;
+                indexBtn < isModeSelected.length;
+                indexBtn++) {
+              if (indexBtn == index) {
+                isModeSelected[indexBtn] = true;
+              } else {
+                isModeSelected[indexBtn] = false;
+              }
+            }
+          });
+        },
+        isSelected: isModeSelected,
+      ),
+    );
+  }
+
   Widget makeChart(context, snapshot) {
     generateData(snapshot);
 
@@ -195,34 +245,92 @@ class _StatisticsBodyState extends State<StatisticsBody> {
               ),
             ),
             _typeSelection(context),
+            _modeSelection(context),
           ],
         ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-            child: LineChart(
-              LineChartData(
-                maxY: maxY,
-                borderData: FlBorderData(
-                  show: true,
-                  border: Border.all(color: Colors.black, width: 1),
-                ),
-                lineTouchData: lineTouchData(),
-                lineBarsData: chartPoints,
-                titlesData: titlesData(chartType),
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: true,
-                  drawHorizontalLine: true,
-                  getDrawingVerticalLine: (value) => gridLines(),
-                  getDrawingHorizontalLine: (value) => gridLines(),
-                ),
+          child: PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              lineChart(context),
+              Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: barChart(context),
               ),
-              swapAnimationDuration: Duration.zero,
-            ),
+            ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget barChart(BuildContext context) {
+    return BarChart(
+      BarChartData(
+        borderData: FlBorderData(
+            border: const Border(
+          top: BorderSide(width: 1),
+          right: BorderSide(width: 1),
+          left: BorderSide(width: 1),
+          bottom: BorderSide(width: 1),
+        )),
+        groupsSpace: 0,
+        maxY: maxY,
+        barGroups: barChartPoints,
+        titlesData: titlesData(chartType),
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+              tooltipBgColor: Colors.blueGrey,
+              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                return BarTooltipItem(
+                  '${chartLabel[groupIndex]} \n ${rodIndex == 0 ? 'HORAS: ' : 'ATOS: '}',
+                  const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: (rod.toY).toStringAsFixed(1 - rodIndex),
+                      style: const TextStyle(
+                        color: Colors.yellow,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                );
+              }),
+        ),
+      ),
+      swapAnimationDuration: Duration.zero,
+    );
+  }
+
+  Widget lineChart(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(30),
+      child: LineChart(
+        LineChartData(
+          maxY: maxY,
+          borderData: FlBorderData(
+            show: true,
+            border: Border.all(color: Colors.black, width: 1),
+          ),
+          lineTouchData: lineTouchData(),
+          lineBarsData: chartPoints,
+          titlesData: titlesData(chartType),
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: true,
+            drawHorizontalLine: true,
+            getDrawingVerticalLine: (value) => gridLines(),
+            getDrawingHorizontalLine: (value) => gridLines(),
+          ),
+        ),
+        swapAnimationDuration: Duration.zero,
+      ),
     );
   }
 
@@ -289,7 +397,7 @@ class _StatisticsBodyState extends State<StatisticsBody> {
         show: true,
         bottomTitles: SideTitles(
           rotateAngle: type == 'weekly'
-              ? -60
+              ? -30
               : type == 'dayly'
                   ? -30
                   : 0,
@@ -345,6 +453,7 @@ class _StatisticsBodyState extends State<StatisticsBody> {
     totalProcedures = procedures.reduce((value, element) => value + element);
     totalHours = hours.reduce((value, element) => value + element);
     setChartData(procedures, hours);
+    setBarChartData(procedures, hours);
   }
 
   int getIndex({
@@ -388,6 +497,25 @@ class _StatisticsBodyState extends State<StatisticsBody> {
     }
 
     return output;
+  }
+
+  void setBarChartData(procedures, hours) {
+    barChartPoints = [];
+    double width = chartType == 'dayly'
+        ? 5
+        : chartType == 'weekly'
+            ? 10
+            : 15;
+
+    for (int i = 0; i < hours.length; i++) {
+      barChartPoints.add(BarChartGroupData(x: i, barRods: [
+        BarChartRodData(toY: hours[i], width: width, colors: [Colors.blue]),
+        BarChartRodData(
+            toY: procedures[i], width: width, colors: [Colors.green]),
+      ]));
+      // print(hours[i]);
+      // print(procedures[i]);
+    }
   }
 
   void setChartData(procedures, hours) {
