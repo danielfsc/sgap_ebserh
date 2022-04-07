@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -12,10 +14,19 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+
   final _emailKey = GlobalKey<FormFieldState>();
+
   final List<TextEditingController> _controller =
       List.generate(4, (i) => TextEditingController());
+
   String? emailProblem;
+
+  @override
+  void dispose() {
+    _controller.forEach((element) => element.dispose());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,14 +52,15 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
   Future? future;
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _controller.forEach((element) => element.dispose());
+    fullForm = null;
+    super.dispose();
   }
 
   @override
-  void dispose() {
-    fullForm = null;
-    super.dispose();
+  void initState() {
+    super.initState();
   }
 
   @override

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +32,12 @@ class _EditUserState extends State<EditUser> {
 
   final List<TextEditingController> _controller =
       List.generate(5, (i) => TextEditingController());
+
+  @override
+  void dispose() {
+    _controller.forEach((element) => element.dispose());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

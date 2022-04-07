@@ -24,6 +24,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _password = TextEditingController();
 
   @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     _auth = Authentication.initializeFirebase(context: context);
     super.initState();

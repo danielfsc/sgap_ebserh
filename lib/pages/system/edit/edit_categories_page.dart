@@ -20,6 +20,13 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
   final TextEditingController _nameField = TextEditingController();
   final TextEditingController _documentName = TextEditingController();
 
+  @override
+  void dispose() {
+    _nameField.dispose();
+    _documentName.dispose();
+    super.dispose();
+  }
+
   bool isMultiple = false;
   bool isEnabledDocumentName = true;
 

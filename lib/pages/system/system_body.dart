@@ -25,6 +25,13 @@ class _SystemBodyState extends State<SystemBody> {
   final TextEditingController _symbolField = TextEditingController();
 
   @override
+  void dispose() {
+    _textField.dispose();
+    _symbolField.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
