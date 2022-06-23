@@ -447,7 +447,9 @@ class _StatisticsBodyState extends State<StatisticsBody> {
       DateTime date = DateTime.parse(data['date'].toDate().toString());
       int index = getIndex(type: chartType, date: date, startDate: startDate);
       procedures[index]++;
-      hours[index] += double.parse(data['duration']) / 60;
+      hours[index] += data['duration'].isNotEmpty
+          ? double.parse(data['duration']) / 60.0
+          : 0;
     }
     chartLabel = labels;
     totalProcedures = procedures.reduce((value, element) => value + element);

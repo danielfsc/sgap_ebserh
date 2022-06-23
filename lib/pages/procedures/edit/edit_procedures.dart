@@ -31,6 +31,8 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
 
   Map<String, dynamic> selectedValues = {};
 
+  String? durationErrorText;
+
   dynamic oldProcedure;
 
   dynamic systemDocuments;
@@ -131,11 +133,20 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
 
   Widget _duracao(context) {
     return TextField(
-      decoration:
-          inputDecoration('Duração', suffix: 'min', hintText: 'Em minutos'),
+      decoration: inputDecoration('Duração',
+          suffix: 'min', hintText: 'Em minutos', errorText: durationErrorText),
       controller: _controller[0],
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      onChanged: (value) {
+        setState(() {
+          if (value.isEmpty) {
+            durationErrorText = "A duração é obrigatória.";
+          } else {
+            durationErrorText = null;
+          }
+        });
+      },
     );
   }
 
@@ -327,6 +338,12 @@ class _EditProcedurePageState extends State<EditProcedurePage> {
   Widget _submit(BuildContext context) {
     return ElevatedButton(
         onPressed: () {
+          if (_controller[0].text.isEmpty) {
+            setState(() {
+              durationErrorText = "A duração é obrigatória";
+            });
+            return;
+          }
           if (_formKey.currentState!.validate()) {
             _save(context);
           }
