@@ -33,8 +33,8 @@ List<VRouteElement> vRoutes = [
     ],
   ),
   VGuard(
-    beforeEnter: (vRedirector) async =>
-        isLoggedIn(vRedirector, ['student', 'preceptor', 'admin']),
+    beforeEnter: (vRedirector) async => isLoggedIn(
+        vRedirector, ['internship', 'student', 'preceptor', 'admin']),
     stackedRoutes: [
       VWidget(path: '/statistics', widget: const StatisticsPage()),
       VWidget(path: '/home', widget: const HomePage()),

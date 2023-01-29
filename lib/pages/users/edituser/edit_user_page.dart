@@ -216,6 +216,7 @@ class _EditUserState extends State<EditUser> {
   Widget _selectRole() {
     List<Map<String, String?>> roles = [
       {'value': null, 'text': 'Escolha um papel'},
+      {'value': 'internship', 'text': 'Graduando'},
       {'value': 'student', 'text': 'Residente'},
       {'value': 'preceptor', 'text': 'Preceptor'},
       {'value': 'admin', 'text': 'Administrador'},

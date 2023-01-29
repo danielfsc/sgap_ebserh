@@ -47,6 +47,9 @@ class _UsersBodyState extends State<UsersBody> {
                     onPressed: () => setUsers(null),
                     child: const Text('Todos')),
                 TextButton(
+                    onPressed: () => setUsers('internship'),
+                    child: const Text('Graduandos')),
+                TextButton(
                     onPressed: () => setUsers('student'),
                     child: const Text('Residentes')),
                 TextButton(

@@ -47,7 +47,7 @@ class StudentCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(user['name'].isNotEmpty
-                      ? '${user['name']} )'
+                      ? '${user['name']}'
                       : 'Nome não cadastrado'),
                   Text('E-mail: ${user['email']}'),
                   Text('CRM: ${user['crm']}'),
