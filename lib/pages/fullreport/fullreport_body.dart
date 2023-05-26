@@ -9,8 +9,7 @@ import 'package:sgap_ebserh/shared/widgets/multi_select/multi_select_flutter.dar
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid_export/export.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio
-    hide Alignment, Column, Row;
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio hide Column, Row;
 
 import '../../controllers/helper/save_file_mobile.dart'
     if (dart.library.js) '../../controllers/helper/save_file_web.dart'

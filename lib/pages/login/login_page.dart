@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sgap_ebserh/configs/widths.dart';
@@ -131,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               child: const Text('Entrar'),
                             ),
-                      code == "wrong-password"
+                      code == "wrong-password" || code == "unknown"
                           ? Padding(
                               padding: const EdgeInsets.all(18.0),
                               child: TextButton(
@@ -195,8 +197,8 @@ class _LoginPageState extends State<LoginPage> {
         .then((value) {
       if (value != null) {
         setState(() {
-          code = value;
           _isSigningIn = false;
+          code = value;
         });
       } else {
         Authentication.setUserAndGoToHome(context);
@@ -207,6 +209,7 @@ class _LoginPageState extends State<LoginPage> {
   void requestPasswordChangeEmail(
       {required BuildContext context, required String email}) {
     Authentication.requestPasswordChangeEmail(email: email).then((result) {
+      // log('result:${result}');
       switch (result) {
         case null:
           snackMessage(context,

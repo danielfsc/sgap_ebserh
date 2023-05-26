@@ -161,6 +161,7 @@ class _EditUserState extends State<EditUser> {
             'admission': Timestamp.fromDate(pickedDate!),
             'role': role,
             'archived': false,
+            'registred': false,
           });
         } else {
           FirebaseFirestore.instance

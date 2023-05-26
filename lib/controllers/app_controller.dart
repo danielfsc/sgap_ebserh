@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,13 +32,23 @@ class AppController extends ChangeNotifier {
   }
 
   Future<void> setUser(User? user) async {
-    if (user == null) {
+    if (user == null || !await hasProfile(user)) {
       _user = null;
       _profile = null;
       return;
     }
+    // if (!await hasProfile(user)) {}
+    log('email:${user.email}');
     _user = user;
     await setUserProfile(user);
+  }
+
+  Future<bool> hasProfile(User user) async {
+    dynamic profile = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.email)
+        .get();
+    return profile.data() != null;
   }
 
   Future<void> setUserProfile(user) async {
@@ -44,6 +56,9 @@ class AppController extends ChangeNotifier {
         .collection('users')
         .doc(user.email)
         .get();
+    if (profile.data() == null) {
+      return;
+    }
 
     _profile = Profile.fromMapPlusCredential(profile.data(), _user!);
     if (_user!.photoURL != profile.data()['photoURL']) {
@@ -53,7 +68,6 @@ class AppController extends ChangeNotifier {
       _profile!.name = _user!.displayName!;
     }
     _profile!.save();
-    // _profile!.checkName(profile.data(), _user!);
   }
 
   String get email {
@@ -94,8 +108,4 @@ class AppController extends ChangeNotifier {
       notifyListeners();
     });
   }
-
-  // brightness() {
-  //   return isDark ? Brightness.dark : Brightness.light;
-  // }
 }

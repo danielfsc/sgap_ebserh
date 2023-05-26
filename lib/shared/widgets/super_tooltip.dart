@@ -4,7 +4,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 enum TooltipDirection { up, down, left, right }
+
 enum ShowCloseButton { inside, outside, none }
+
 enum ClipAreaShape { oval, rectangle }
 
 typedef OutSideTapHandler = void Function();
@@ -222,7 +224,7 @@ class SuperTooltip {
   /// Uses [overlay] to show tooltip or [targetContext]'s overlay if [overlay] is null
   void show(BuildContext targetContext, {OverlayState? overlay}) {
     final renderBox = targetContext.findRenderObject() as RenderBox;
-    overlay ??= Overlay.of(targetContext)!;
+    overlay ??= Overlay.of(targetContext);
     final overlayRenderBox = overlay.context.findRenderObject() as RenderBox?;
 
     _targetCenter = renderBox.localToGlobal(renderBox.size.center(Offset.zero),
@@ -1073,7 +1075,7 @@ class _AnimationWrapperState extends State<_AnimationWrapper> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         setState(() {
           opacity = 1.0;

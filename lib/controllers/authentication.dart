@@ -26,9 +26,15 @@ class Authentication {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        await AppController.instance.setUser(user);
-        if (changeRoute) {
-          context.vRouter.to(endPoint);
+        dynamic profile = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.email)
+            .get();
+        if (profile.data() != null) {
+          await AppController.instance.setUser(user);
+          if (changeRoute) {
+            context.vRouter.to(endPoint);
+          }
         }
       }
 
@@ -45,9 +51,17 @@ class Authentication {
   }) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-
+      User? user = FirebaseAuth.instance.currentUser;
+      if (!await AppController.instance.hasProfile(user!)) {
+        snackMessage(context,
+            message:
+                "Este usuário ainda não cadastrado no sistema pelo administrador. Fale com o seu preceptor.",
+            color: Colors.red);
+        return "unregistred";
+      }
       return null;
     } on FirebaseAuthException catch (e) {
+      log(e.code);
       switch (e.code) {
         case "user-not-found":
           snackMessage(context,
@@ -56,6 +70,13 @@ class Authentication {
 
           break;
         case "wrong-password":
+          snackMessage(context,
+              message:
+                  "Senha Incorreta, tente novamente ou use a recuperação de senha.",
+              color: Colors.red);
+
+          break;
+        case "unknown":
           snackMessage(context,
               message:
                   "Senha Incorreta, tente novamente ou use a recuperação de senha.",
@@ -107,6 +128,8 @@ class Authentication {
               await _auth.signInWithCredential(credential);
 
           user = userCredential.user;
+
+          // if (!await AppController.instance.hasProfile(user)) {}
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {
             snackMessage(context,
@@ -130,6 +153,13 @@ class Authentication {
       return null;
     }
 
+    if (user != null && user.email != null) {
+      await FirebaseFirestore.instance
+          .collection('users/')
+          .doc(user.email)
+          .update({'registred': true});
+    }
+
     return user;
   }
 
@@ -148,9 +178,12 @@ class Authentication {
         'name': name,
         'email': email,
         'crm': "$crm",
+        'registred': true,
       });
+
       return null;
     } on FirebaseAuthException catch (e) {
+      log(e.code);
       return e.code;
     }
   }
@@ -158,26 +191,37 @@ class Authentication {
   static Future<String?> requestPasswordChangeEmail(
       {required String email}) async {
     try {
-      if (await checkEmailRegisterStatus(email: email) == "registred") {
+      String? status = await checkEmailRegisterStatus(email: email);
+      if (status == "registred") {
         await _auth.sendPasswordResetEmail(email: email);
+
         return null;
       }
       return "unregistred";
     } on FirebaseAuthException catch (e) {
+      // log('${e.code}');
       return e.code;
     }
   }
 
   static Future<String?> checkEmailRegisterStatus(
       {required String email}) async {
-    dynamic data =
-        await FirebaseFirestore.instance.collection('users/').doc(email).get();
-    if (!data.exists || data.data()['archived'] == true) {
-      return "missing";
+    try {
+      dynamic data = await FirebaseFirestore.instance
+          .collection('users/')
+          .doc(email)
+          .get();
+      if (!data.exists || data.data()['archived'] == true) {
+        return "missing";
+      }
+
+      if (data.data()['registred']) {
+        return "registred";
+      }
+    } catch (e) {
+      // log('${e}');
     }
-    if (data.data()['name'] != null) {
-      return "registred";
-    }
+
     return null;
   }
 
@@ -204,8 +248,6 @@ class Authentication {
       {String endPoint = '/home'}) async {
     await AppController.instance.setUser(FirebaseAuth.instance.currentUser);
     context.vRouter.to(endPoint);
-
-    // Navigator.of(context).popAndPushNamed(endPoint);
   }
 
   static Future<bool> isLoggedIn() async {
@@ -217,27 +259,13 @@ class Authentication {
           return false;
         } else {
           await AppController.instance.setUser(u);
+          if (AppController.instance.user == null) {
+            return false;
+          }
           break;
         }
       }
     }
     return true;
   }
-
-  // static Future<void> routeGuard(BuildContext context,
-  //     {String endPoint = '/home'}) async {
-  //   if (AppController.instance.user == null) {
-  //     await Firebase.initializeApp();
-  //     await for (final u in FirebaseAuth.instance.authStateChanges()) {
-  //       if (u == null) {
-  //         context.vRouter.to('/');
-  //         // Navigator.of(context).popAndPushNamed('/');
-  //       } else {
-  //         AppController.instance.setUser(u);
-  //         context.vRouter.to(endPoint);
-  //         // Navigator.of(context).popAndPushNamed(endPoint);
-  //       }
-  //     }
-  //   }
-  // }
 }

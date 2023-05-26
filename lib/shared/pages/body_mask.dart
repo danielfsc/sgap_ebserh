@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
@@ -59,6 +61,7 @@ class MenuButtonWidget extends StatelessWidget {
     return IconButton(
       icon: const Icon(Icons.menu),
       onPressed: () {
+        // log('Abrir o menu');
         ZoomDrawer.of(context)!.open();
       },
     );

@@ -3,7 +3,7 @@ description: Sistema de Gerenciamento de Atividades Práticas - HU/EBSERH
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -32,17 +32,17 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  
+
   #Google Firebase
-  firebase_database: ^9.0.8
-  firebase_core: ^1.7.0
-  firebase_auth: ^3.1.3
+  firebase_database: ^10.2.1
+  firebase_core: ^2.13.0
+  firebase_auth: ^4.6.1
   google_sign_in: ^5.1.1
-  cloud_firestore: ^2.5.3
+  cloud_firestore: ^4.7.1
   #cache image
-  cached_network_image: ^3.2.0
+  cached_network_image: ^3.2.3
   #Fancy Drawer
-  flutter_zoom_drawer: ^2.1.1
+  flutter_zoom_drawer: ^2.3.1+1
   #Local storage
   shared_preferences: ^2.0.8
 
@@ -50,22 +50,21 @@ dependencies:
 
   fl_chart: ^0.46.0
 
-  syncfusion_flutter_datagrid: ^19.4.55
-  syncfusion_flutter_core: ^19.4.55
-  syncfusion_flutter_datagrid_export: ^19.4.55-beta
-  syncfusion_flutter_xlsio: ^19.4.55-beta
+  syncfusion_flutter_datagrid: ^21.2.6
+  syncfusion_flutter_core: ^21.2.6
+  syncfusion_flutter_datagrid_export: ^21.2.6
+  syncfusion_flutter_xlsio: ^21.2.6
   open_file: ^3.2.1
 
   multi_select_flutter: ^4.1.2
-  
 
   prompt_dialog: ^1.0.6
   permission_handler: any
   universal_html: ^2.0.8
-  
+
   vrouter: ^1.2.0+21
 
-  intl: ^0.17.0
+  intl: ^0.18.0
   provider: ^5.0.0
 
 dev_dependencies:
@@ -84,7 +83,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

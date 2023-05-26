@@ -56,11 +56,11 @@ class HomeBody extends StatelessWidget {
             height: MediaQuery.of(context).size.width * 0.15 > 250
                 ? 250
                 : MediaQuery.of(context).size.width * 0.15,
-            child: Center(
+            child: const Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Icon(
                     Icons.logout,
                     size: 42,

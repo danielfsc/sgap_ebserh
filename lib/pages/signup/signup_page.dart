@@ -1,9 +1,12 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
 import '../../controllers/authentication.dart';
+import '../../shared/widgets/snack_message.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -108,6 +111,15 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: ElevatedButton(
                     child: const Text('Cadastrar-se'),
                     onPressed: () {
+                      Authentication.checkEmailRegisterStatus(
+                              email: _controller[1].text)
+                          .then((value) {
+                        emailProblem = value;
+                        setState(() {
+                          _emailKey.currentState!.validate();
+                        });
+                      });
+                      log('${_formKey.currentState!.validate()}');
                       if (_formKey.currentState!.validate()) {
                         Authentication.signUp(
                           name: _controller[0].text,
@@ -123,9 +135,22 @@ class _SignUpPageState extends State<SignUpPage> {
                               emailProblem = "registred";
                               _emailKey.currentState!.validate();
                             });
+                          } else if (result == "unknown") {
+                            setState(() {
+                              emailProblem = "registred";
+                              _emailKey.currentState!.validate();
+                            });
+                            snackMessage(context,
+                                message:
+                                    "Muito provavelmente você já fez o cadastro. Tente utilizar a recuperação de senha.",
+                                color: Colors.red);
                           }
                         });
-                      } else {}
+                      } else {
+                        snackMessage(context,
+                            message: "Corrija os erros antes de prosseguir.",
+                            color: Colors.red);
+                      }
                     },
                   ),
                 ),

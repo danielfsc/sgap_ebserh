@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 Widget loading() {
-  return Center(
+  return const Center(
     child: Column(
-      children: const [
+      children: [
         CircularProgressIndicator(),
         Text('Carregando...'),
       ],
